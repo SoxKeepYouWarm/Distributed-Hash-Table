@@ -87,7 +87,8 @@ public class SimpleDhtProvider extends ContentProvider {
             }
 
         } else {
-            // slave node needs to connect to master
+            // connect to master node
+
 
         }
 
@@ -96,7 +97,7 @@ public class SimpleDhtProvider extends ContentProvider {
 
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
-        // TODO Auto-generated method stub
+        Message delete_message = new Message(Message.DELETE, MY_PORT);
         return 0;
     }
 
@@ -108,7 +109,11 @@ public class SimpleDhtProvider extends ContentProvider {
 
     @Override
     public Uri insert(Uri uri, ContentValues values) {
-        // TODO Auto-generated method stub
+
+        Message insert_message = new Message(Message.INSERT, MY_PORT);
+        insert_message.insert_key_val(values.getAsString("key"), values.getAsString("value"));
+        Provider_handlers.handle_insert(insert_message);
+
         return null;
     }
 
@@ -117,13 +122,14 @@ public class SimpleDhtProvider extends ContentProvider {
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs,
             String sortOrder) {
-        // TODO Auto-generated method stub
+        Message delete_message = new Message(Message.QUERY, MY_PORT);
+        Log.d(TAG, "query selection is: " + selection);
         return null;
     }
 
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-        // TODO Auto-generated method stub
+
         return 0;
     }
 
@@ -139,13 +145,6 @@ public class SimpleDhtProvider extends ContentProvider {
 
 
     private class ServerTask extends AsyncTask<ServerSocket, String, Void> {
-
-
-
-        public void route_message(Message message) {
-            String command = message.getCommand();
-        }
-
 
         @Override
         protected Void doInBackground(ServerSocket... sockets) {
@@ -163,7 +162,7 @@ public class SimpleDhtProvider extends ContentProvider {
                     while ((message = in.readLine()) != null) {
 
                         Message incoming_message = new Message(message);
-                        route_message(incoming_message);
+                        Provider_handlers.route_incoming_message(incoming_message);
 
                         publishProgress(incoming_message.stringify());
                     }

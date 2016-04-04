@@ -10,6 +10,7 @@ public class Message {
     public static String JOIN_RESPONSE = "join_response";
     public static String INSERT = "insert";
     public static String QUERY = "query";
+    public static String DELETE = "delete";
 
     private static String SECTION_BREAKPOINT = Character.toString(Character.toChars(200)[0]);
     private static String KEY_VAL_BREAKPOINT = Character.toString(Character.toChars(201)[0]);
