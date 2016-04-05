@@ -84,4 +84,8 @@ public class Message {
         return this.data;
     }
 
+    public String get_arg(String key) {
+        return this.data.get(key);
+    }
+
 }

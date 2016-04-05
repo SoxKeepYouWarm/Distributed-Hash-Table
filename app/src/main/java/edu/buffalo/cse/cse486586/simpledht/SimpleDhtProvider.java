@@ -30,6 +30,8 @@ public class SimpleDhtProvider extends ContentProvider {
     public static String SUCCESSOR_PORT;
     public static String SUCCESSOR_NODE_ID;
 
+    public static boolean CONNECTED = false;
+
     Hashtable<String, String> datastore = new Hashtable<String, String>();
     Hashtable<String, String> providers = new Hashtable<String, String>();
 
@@ -78,6 +80,7 @@ public class SimpleDhtProvider extends ContentProvider {
         if (MY_PORT.equals(MASTER_NODE_PORT)) {
             PREDECESSOR_PORT = MY_PORT;
             SUCCESSOR_PORT = MY_PORT;
+            CONNECTED = true;
             try {
                 PREDECESSOR_NODE_ID = Provider_handlers.genHash(MY_PORT);
                 SUCCESSOR_NODE_ID = Provider_handlers.genHash(MY_PORT);

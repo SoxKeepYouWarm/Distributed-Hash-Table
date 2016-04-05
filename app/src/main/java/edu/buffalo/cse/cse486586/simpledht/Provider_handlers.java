@@ -9,6 +9,14 @@ import java.util.Formatter;
 public class Provider_handlers {
 
     static final String TAG = SimpleDhtProvider.class.getSimpleName();
+
+    private static int ONLY_NODE = 1;
+    private static int FIRST_NODE = 2;
+    private static int LAST_NODE = 3;
+    private static int MIDDLE_NODE = 4;
+
+    private static int NODE_POSITION;
+
     static SimpleDhtProvider provider_reference;
 
     public static void send_message(Message message, String destination_port) {
@@ -22,8 +30,7 @@ public class Provider_handlers {
         }
         Log.d(TAG, "received join request from node: " + message.getSender_port());
 
-        if (SimpleDhtProvider.MY_NODE_ID.equals(SimpleDhtProvider.SUCCESSOR_NODE_ID) &&
-                SimpleDhtProvider.MY_NODE_ID.equals(SimpleDhtProvider.PREDECESSOR_NODE_ID)) {
+        if (NODE_POSITION == ONLY_NODE) {
             // first node is joining
             String sender_port = message.getSender_port();
             String sender_node_id;
@@ -50,7 +57,18 @@ public class Provider_handlers {
     }
 
     public static void handle_join_response(Message message) {
+        Log.d(TAG, "received join response from master node");
+        SimpleDhtProvider.PREDECESSOR_PORT = message.get_arg(Message.PREDECESSOR);
+        SimpleDhtProvider.SUCCESSOR_PORT = message.get_arg(Message.SUCCESSOR);
 
+        try {
+            SimpleDhtProvider.PREDECESSOR_NODE_ID = genHash(SimpleDhtProvider.PREDECESSOR_PORT);
+            SimpleDhtProvider.SUCCESSOR_NODE_ID = genHash(SimpleDhtProvider.SUCCESSOR_PORT);
+        } catch (NoSuchAlgorithmException err) {
+            Log.e(TAG, "HANDLE_JOIN_RESPONSE: error generating hash");
+        }
+
+        SimpleDhtProvider.CONNECTED = true;
     }
 
     public static void handle_query(Message message) {
@@ -65,8 +83,25 @@ public class Provider_handlers {
 
     }
 
+    public static void determine_node_position() {
+
+        if (SimpleDhtProvider.MY_NODE_ID.equals(SimpleDhtProvider.SUCCESSOR_NODE_ID) &&
+                SimpleDhtProvider.MY_NODE_ID.equals(SimpleDhtProvider.PREDECESSOR_NODE_ID)) {
+            NODE_POSITION = ONLY_NODE;
+        } else if (SimpleDhtProvider.MY_NODE_ID.compareTo(SimpleDhtProvider.PREDECESSOR_NODE_ID) < 0) {
+            NODE_POSITION = FIRST_NODE;
+        } else if (SimpleDhtProvider.MY_NODE_ID.compareTo(SimpleDhtProvider.SUCCESSOR_NODE_ID) > 0) {
+            NODE_POSITION = LAST_NODE;
+        } else {
+            NODE_POSITION = MIDDLE_NODE;
+        }
+
+    }
+
     public static void route_incoming_message(SimpleDhtProvider provider, Message message) {
         provider_reference = provider;
+        if (SimpleDhtProvider.CONNECTED) determine_node_position();
+
         if (message.getCommand().equals(Message.QUERY)) handle_query(message);
         if (message.getCommand().equals(Message.INSERT)) handle_insert(message);
         if (message.getCommand().equals(Message.DELETE)) handle_delete(message);
