@@ -30,29 +30,56 @@ public class Provider_handlers {
         }
         Log.d(TAG, "received join request from node: " + message.getSender_port());
 
-        if (NODE_POSITION == ONLY_NODE) {
-            // first node is joining
-            String sender_port = message.getSender_port();
-            String sender_node_id;
-            try {
-                sender_node_id = genHash(sender_port);
-            } catch (NoSuchAlgorithmException err) {
-                Log.e(TAG, "HANDLE_JOIN_REQUEST: error generating port hash");
-                sender_node_id = null;
-            }
+        String sender_port = message.getSender_port();
+        String sender_node_id;
 
+        try {
+            sender_node_id = genHash(sender_port);
+        } catch (NoSuchAlgorithmException err) {
+            Log.e(TAG, "HANDLE_JOIN_REQUEST: error generating port hash");
+            sender_node_id = "";
+        }
+
+        if (NODE_POSITION == ONLY_NODE) {
+
+            // add pointers to sender in my node
             SimpleDhtProvider.SUCCESSOR_PORT = sender_port;
             SimpleDhtProvider.SUCCESSOR_NODE_ID = sender_node_id;
             SimpleDhtProvider.PREDECESSOR_PORT = sender_port;
             SimpleDhtProvider.PREDECESSOR_NODE_ID = sender_node_id;
 
+            // return predecessor and successor info for sender
             Message response_message = new Message(Message.JOIN_RESPONSE, SimpleDhtProvider.MY_PORT);
             response_message.insert_args(Message.PREDECESSOR, SimpleDhtProvider.MY_PORT);
             response_message.insert_args(Message.SUCCESSOR, SimpleDhtProvider.MY_PORT);
 
             send_message(response_message, sender_port);
 
+        } else if (NODE_POSITION == FIRST_NODE) {
+
+            if (sender_node_id.compareTo(SimpleDhtProvider.MY_NODE_ID) > 0 &&
+                    sender_node_id.compareTo(SimpleDhtProvider.SUCCESSOR_NODE_ID) < 0) {
+
+                // return predecessor and successor info for sender
+                Message response_message = new Message(Message.JOIN_RESPONSE, SimpleDhtProvider.MY_PORT);
+                response_message.insert_args(Message.PREDECESSOR, SimpleDhtProvider.MY_PORT);
+                response_message.insert_args(Message.SUCCESSOR, SimpleDhtProvider.SUCCESSOR_PORT);
+
+                send_message(response_message, sender_port);
+
+            }
+
+        } else if (NODE_POSITION == LAST_NODE) {
+
+
+
+        } else if (NODE_POSITION == MIDDLE_NODE) {
+
+
+
         }
+
+        else Log.e(TAG, "HANDLE_JOIN_REQUEST: node position was not set");
 
     }
 
@@ -88,12 +115,16 @@ public class Provider_handlers {
         if (SimpleDhtProvider.MY_NODE_ID.equals(SimpleDhtProvider.SUCCESSOR_NODE_ID) &&
                 SimpleDhtProvider.MY_NODE_ID.equals(SimpleDhtProvider.PREDECESSOR_NODE_ID)) {
             NODE_POSITION = ONLY_NODE;
+            Log.d(TAG, "DETERMINE_NODE_POSITION: this node is only node");
         } else if (SimpleDhtProvider.MY_NODE_ID.compareTo(SimpleDhtProvider.PREDECESSOR_NODE_ID) < 0) {
             NODE_POSITION = FIRST_NODE;
+            Log.d(TAG, "DETERMINE_NODE_POSITION: this node is first node");
         } else if (SimpleDhtProvider.MY_NODE_ID.compareTo(SimpleDhtProvider.SUCCESSOR_NODE_ID) > 0) {
             NODE_POSITION = LAST_NODE;
+            Log.d(TAG, "DETERMINE_NODE_POSITION: this node is last node");
         } else {
             NODE_POSITION = MIDDLE_NODE;
+            Log.d(TAG, "DETERMINE_NODE_POSITION: this node is middle node");
         }
 
     }
@@ -103,10 +134,11 @@ public class Provider_handlers {
         if (SimpleDhtProvider.CONNECTED) determine_node_position();
 
         if (message.getCommand().equals(Message.QUERY)) handle_query(message);
-        if (message.getCommand().equals(Message.INSERT)) handle_insert(message);
-        if (message.getCommand().equals(Message.DELETE)) handle_delete(message);
-        if (message.getCommand().equals(Message.JOIN)) handle_join_request(message);
-        if (message.getCommand().equals(Message.JOIN_RESPONSE)) handle_join_response(message);
+        else if (message.getCommand().equals(Message.INSERT)) handle_insert(message);
+        else if (message.getCommand().equals(Message.DELETE)) handle_delete(message);
+        else if (message.getCommand().equals(Message.JOIN)) handle_join_request(message);
+        else if (message.getCommand().equals(Message.JOIN_RESPONSE)) handle_join_response(message);
+        else Log.e(TAG, "ROUTE_INCOMING_MESSAGE: message was not routed correctly");
     }
 
     public static String genHash(String input) throws NoSuchAlgorithmException {
