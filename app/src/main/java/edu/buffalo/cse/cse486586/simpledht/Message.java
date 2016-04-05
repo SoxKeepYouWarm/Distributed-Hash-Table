@@ -12,9 +12,12 @@ public class Message {
     public static String QUERY = "query";
     public static String DELETE = "delete";
 
-    private static String SECTION_BREAKPOINT = Character.toString(Character.toChars(200)[0]);
-    private static String KEY_VAL_BREAKPOINT = Character.toString(Character.toChars(201)[0]);
-    private static String PAIR_BREAKPOINT = Character.toString(Character.toChars(202)[0]);
+    public static String PREDECESSOR = "predecessor";
+    public static String SUCCESSOR = "successor";
+
+    private static String SECTION_BREAKPOINT = new String(Character.toChars(200));
+    private static String KEY_VAL_BREAKPOINT = new String(Character.toChars(201));
+    private static String PAIR_BREAKPOINT = new String(Character.toChars(202));
 
     private String command;
     private String sender_port;
@@ -46,11 +49,11 @@ public class Message {
 
     }
 
-    public void insert_key_val(String key, String val) {
+    public void insert_args(String key, String val) {
         data.put(key, val);
     }
 
-    public void set_data(Hashtable<String, String> data) {
+    public void set_args(Hashtable<String, String> data) {
         this.data = new HashMap<String, String>(data);
     }
 
@@ -76,7 +79,7 @@ public class Message {
         return this.sender_port;
     }
 
-    public HashMap<String, String> get_message_data() {
+    public HashMap<String, String> get_args() {
         return this.data;
     }
 
