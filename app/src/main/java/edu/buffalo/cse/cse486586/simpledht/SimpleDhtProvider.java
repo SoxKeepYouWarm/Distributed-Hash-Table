@@ -1,10 +1,7 @@
 package edu.buffalo.cse.cse486586.simpledht;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.ServerSocket;
-import java.net.Socket;
 import java.security.NoSuchAlgorithmException;
 import java.util.Hashtable;
 
@@ -100,7 +97,13 @@ public class SimpleDhtProvider extends ContentProvider {
 
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
+        Log.d(TAG, "delete selection is: " + selection);
+
         Message delete_message = new Message(Message.DELETE, MY_PORT);
+        delete_message.insert_args(Message.SELECTION, selection);
+
+        Provider_handlers.route_incoming_message(this, delete_message);
+
         return 0;
     }
 
@@ -112,23 +115,28 @@ public class SimpleDhtProvider extends ContentProvider {
 
     @Override
     public Uri insert(Uri uri, ContentValues values) {
+        Log.d(TAG, "insert value is key: " + values.getAsString("key") +
+                " value: " + values.getAsString("value"));
 
         Message insert_message = new Message(Message.INSERT, MY_PORT);
         insert_message.insert_args(values.getAsString("key"), values.getAsString("value"));
 
-        // TODO determine storage device for key pair
-        //Provider_handlers.handle_insert(insert_message);
+        Provider_handlers.route_incoming_message(this, insert_message);
 
         return null;
     }
 
 
-
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs,
             String sortOrder) {
-        Message delete_message = new Message(Message.QUERY, MY_PORT);
         Log.d(TAG, "query selection is: " + selection);
+
+        Message query_message = new Message(Message.QUERY, MY_PORT);
+        query_message.insert_args(Message.SELECTION, selection);
+
+        Provider_handlers.route_incoming_message(this, query_message);
+
         return null;
     }
 
@@ -137,10 +145,5 @@ public class SimpleDhtProvider extends ContentProvider {
 
         return 0;
     }
-
-
-
-
-
 
 }

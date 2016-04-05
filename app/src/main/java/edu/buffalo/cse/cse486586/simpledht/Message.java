@@ -14,6 +14,7 @@ public class Message {
 
     public static String PREDECESSOR = "predecessor";
     public static String SUCCESSOR = "successor";
+    public static String SELECTION = "selection";
 
     private static String SECTION_BREAKPOINT = new String(Character.toChars(200));
     private static String KEY_VAL_BREAKPOINT = new String(Character.toChars(201));
