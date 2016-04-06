@@ -57,25 +57,113 @@ public class Provider_handlers {
 
         } else if (NODE_POSITION == FIRST_NODE) {
 
-            if (sender_node_id.compareTo(SimpleDhtProvider.MY_NODE_ID) > 0 &&
-                    sender_node_id.compareTo(SimpleDhtProvider.SUCCESSOR_NODE_ID) < 0) {
+            Message response_message;
 
-                // return predecessor and successor info for sender
-                Message response_message = new Message(Message.JOIN_RESPONSE, SimpleDhtProvider.MY_PORT);
-                response_message.insert_args(Message.PREDECESSOR, SimpleDhtProvider.MY_PORT);
-                response_message.insert_args(Message.SUCCESSOR, SimpleDhtProvider.SUCCESSOR_PORT);
+            switch (find_relationship(sender_node_id)) {
 
-                send_message(response_message, sender_port);
+                case IS_MY_NODE:
+                case IS_SUCCESSOR_NODE:
+                case IS_PREDECESSOR_NODE:
+                case BEFORE_PREDECESSOR_NODE:
+                    Log.e(TAG, "received join request with invalid case");
+                    break;
+                case AFTER_SUCCESSOR_NODE:
+                    send_message(message, SimpleDhtProvider.SUCCESSOR_PORT);
+                    Log.d(TAG, "forwarded join request to successor node");
+                    break;
+                case BETWEEN_SUCCESSOR_NODE:
+                    // return predecessor and successor info for sender
+                    response_message = new Message(Message.JOIN_RESPONSE, SimpleDhtProvider.MY_PORT);
+                    response_message.insert_args(Message.PREDECESSOR, SimpleDhtProvider.MY_PORT);
+                    response_message.insert_args(Message.SUCCESSOR, SimpleDhtProvider.SUCCESSOR_PORT);
+
+                    send_message(response_message, sender_port);
+
+                    // TODO update successor node's predecessor pointer
+                    Log.d(TAG, "responded to join request");
+                    break;
+                case BETWEEN_PREDECESSOR_NODE:
+                    // return predecessor and successor info for sender
+                    response_message = new Message(Message.JOIN_RESPONSE, SimpleDhtProvider.MY_PORT);
+                    response_message.insert_args(Message.PREDECESSOR, SimpleDhtProvider.PREDECESSOR_PORT);
+                    response_message.insert_args(Message.SUCCESSOR, SimpleDhtProvider.MY_PORT);
+
+                    send_message(response_message, sender_port);
+
+                    // TODO update predecessors node's successor pointer
+                    Log.d(TAG, "responded to join request");
+                    break;
 
             }
 
         } else if (NODE_POSITION == LAST_NODE) {
 
+            switch (find_relationship(sender_node_id)) {
 
+                case IS_MY_NODE:
+                case IS_SUCCESSOR_NODE:
+                case IS_PREDECESSOR_NODE:
+                case AFTER_SUCCESSOR_NODE:
+                    Log.e(TAG, "received join request with invalid case");
+                    break;
+                case BEFORE_PREDECESSOR_NODE:
+                    send_message(message, SimpleDhtProvider.PREDECESSOR_PORT);
+                    Log.d(TAG, "forwarded join request to predecessor node");
+                    break;
+                case BETWEEN_SUCCESSOR_NODE:
+                    // return predecessor and successor info for sender
+                    Message response_message = new Message(Message.JOIN_RESPONSE, SimpleDhtProvider.MY_PORT);
+                    response_message.insert_args(Message.PREDECESSOR, SimpleDhtProvider.MY_PORT);
+                    response_message.insert_args(Message.SUCCESSOR, SimpleDhtProvider.SUCCESSOR_PORT);
+
+                    send_message(response_message, sender_port);
+
+                    // TODO update successor node's predecessor pointer
+                    Log.d(TAG, "responded to join request");
+                    break;
+
+            }
 
         } else if (NODE_POSITION == MIDDLE_NODE) {
 
+            Message response_message;
 
+            switch (find_relationship(sender_node_id)) {
+
+                case IS_MY_NODE:
+                case IS_SUCCESSOR_NODE:
+                case IS_PREDECESSOR_NODE:
+                case AFTER_SUCCESSOR_NODE:
+                    send_message(message, SimpleDhtProvider.SUCCESSOR_PORT);
+                    Log.d(TAG, "forwarded join request to successor node");
+                    break;
+                case BEFORE_PREDECESSOR_NODE:
+                    send_message(message, SimpleDhtProvider.PREDECESSOR_PORT);
+                    Log.d(TAG, "forwarded join request to predecessor node");
+                    break;
+                case BETWEEN_SUCCESSOR_NODE:
+                    // return predecessor and successor info for sender
+                    response_message = new Message(Message.JOIN_RESPONSE, SimpleDhtProvider.MY_PORT);
+                    response_message.insert_args(Message.PREDECESSOR, SimpleDhtProvider.MY_PORT);
+                    response_message.insert_args(Message.SUCCESSOR, SimpleDhtProvider.SUCCESSOR_PORT);
+
+                    send_message(response_message, sender_port);
+
+                    // TODO update successor node's predecessor pointer
+                    Log.d(TAG, "responded to join request");
+                    break;
+                case BETWEEN_PREDECESSOR_NODE:
+                    // return predecessor and successor info for sender
+                    response_message = new Message(Message.JOIN_RESPONSE, SimpleDhtProvider.MY_PORT);
+                    response_message.insert_args(Message.PREDECESSOR, SimpleDhtProvider.MY_PORT);
+                    response_message.insert_args(Message.SUCCESSOR, SimpleDhtProvider.SUCCESSOR_PORT);
+
+                    send_message(response_message, sender_port);
+
+                    // TODO update successor node's predecessor pointer
+                    Log.d(TAG, "responded to join request");
+                    break;
+            }
 
         }
 
@@ -116,10 +204,10 @@ public class Provider_handlers {
                 SimpleDhtProvider.MY_NODE_ID.equals(SimpleDhtProvider.PREDECESSOR_NODE_ID)) {
             NODE_POSITION = ONLY_NODE;
             Log.d(TAG, "DETERMINE_NODE_POSITION: this node is only node");
-        } else if (SimpleDhtProvider.MY_NODE_ID.compareTo(SimpleDhtProvider.PREDECESSOR_NODE_ID) < 0) {
+        } else if (less_than(SimpleDhtProvider.MY_NODE_ID, SimpleDhtProvider.PREDECESSOR_NODE_ID)) {
             NODE_POSITION = FIRST_NODE;
             Log.d(TAG, "DETERMINE_NODE_POSITION: this node is first node");
-        } else if (SimpleDhtProvider.MY_NODE_ID.compareTo(SimpleDhtProvider.SUCCESSOR_NODE_ID) > 0) {
+        } else if (greater_than(SimpleDhtProvider.MY_NODE_ID, SimpleDhtProvider.SUCCESSOR_NODE_ID)) {
             NODE_POSITION = LAST_NODE;
             Log.d(TAG, "DETERMINE_NODE_POSITION: this node is last node");
         } else {
@@ -149,6 +237,113 @@ public class Provider_handlers {
             formatter.format("%02x", b);
         }
         return formatter.toString();
+    }
+
+
+    private static final int IS_MY_NODE = 1;
+    private static final int IS_SUCCESSOR_NODE = 2;
+    private static final int IS_PREDECESSOR_NODE = 3;
+    private static final int BETWEEN_SUCCESSOR_NODE = 4;
+    private static final int BETWEEN_PREDECESSOR_NODE = 5;
+    private static final int AFTER_SUCCESSOR_NODE = 6;
+    private static final int BEFORE_PREDECESSOR_NODE = 7;
+
+    public static int find_relationship(String sender_id) {
+
+        if (sender_id.equals(SimpleDhtProvider.MY_NODE_ID)) {
+            return IS_MY_NODE;
+        }
+
+        if (sender_id.equals(SimpleDhtProvider.SUCCESSOR_NODE_ID)) {
+            return IS_SUCCESSOR_NODE;
+        }
+
+        if (sender_id.equals(SimpleDhtProvider.PREDECESSOR_NODE_ID)) {
+            return IS_PREDECESSOR_NODE;
+        }
+
+
+        if (NODE_POSITION == ONLY_NODE) {
+
+            Log.e(TAG, "FIND_RELATIONSHIP: called when only node");
+            return -1;
+
+
+        } else if (NODE_POSITION == FIRST_NODE) {
+
+            if (less_than(sender_id, SimpleDhtProvider.MY_NODE_ID)
+                    || greater_than(sender_id, SimpleDhtProvider.PREDECESSOR_NODE_ID)) {
+                return BETWEEN_PREDECESSOR_NODE;
+            }
+
+            if (greater_than(sender_id, SimpleDhtProvider.MY_NODE_ID)
+                    && less_than(sender_id, SimpleDhtProvider.SUCCESSOR_NODE_ID)) {
+                return BETWEEN_SUCCESSOR_NODE;
+            }
+
+            if (greater_than(sender_id, SimpleDhtProvider.SUCCESSOR_NODE_ID)) {
+                return AFTER_SUCCESSOR_NODE;
+            }
+
+            Log.e(TAG, "FIND_RELATIONSHIP: error with node_position: first_node");
+            return -1;
+
+        } else if (NODE_POSITION == LAST_NODE) {
+
+            if (greater_than(sender_id, SimpleDhtProvider.MY_NODE_ID)
+                    || less_than(sender_id, SimpleDhtProvider.SUCCESSOR_NODE_ID)) {
+                return BETWEEN_SUCCESSOR_NODE;
+            }
+
+            if (less_than(sender_id, SimpleDhtProvider.MY_NODE_ID)
+                    && greater_than(sender_id, SimpleDhtProvider.PREDECESSOR_NODE_ID)) {
+                return BETWEEN_PREDECESSOR_NODE;
+            }
+
+            if (less_than(sender_id, SimpleDhtProvider.PREDECESSOR_NODE_ID)) {
+                return BEFORE_PREDECESSOR_NODE;
+            }
+
+            Log.e(TAG, "FIND_RELATIONSHIP: error with node_position: last_node");
+            return -1;
+
+        } else if (NODE_POSITION == MIDDLE_NODE) {
+
+            if (greater_than(sender_id, SimpleDhtProvider.MY_NODE_ID)
+                    && greater_than(sender_id, SimpleDhtProvider.SUCCESSOR_NODE_ID)) {
+                return AFTER_SUCCESSOR_NODE;
+            }
+
+            if (greater_than(sender_id, SimpleDhtProvider.MY_NODE_ID)
+                    && less_than(sender_id, SimpleDhtProvider.SUCCESSOR_NODE_ID)) {
+                return BETWEEN_SUCCESSOR_NODE;
+            }
+
+            if (less_than(sender_id, SimpleDhtProvider.MY_NODE_ID)
+                    && less_than(sender_id, SimpleDhtProvider.SUCCESSOR_NODE_ID)) {
+                return BEFORE_PREDECESSOR_NODE;
+            }
+
+            if (less_than(sender_id, SimpleDhtProvider.MY_NODE_ID)
+                    && greater_than(sender_id, SimpleDhtProvider.PREDECESSOR_NODE_ID)) {
+                return BEFORE_PREDECESSOR_NODE;
+            }
+
+            Log.e(TAG, "FIND_RELATIONSHIP: error with node_position: middle_node");
+            return -1;
+
+        } else {
+            Log.e(TAG, "FIND_RELATIONSHIP: error with node position");
+            return -1;
+        }
+    }
+
+    private static boolean greater_than(String a, String b) {
+        return a.compareTo(b) > 0;
+    }
+
+    private static boolean less_than(String a, String b) {
+        return a.compareTo(b) < 0;
     }
 
 }

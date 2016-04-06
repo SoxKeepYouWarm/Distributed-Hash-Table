@@ -1,18 +1,22 @@
 [
     {
-        "merged": "C:\\home\\david\\Documents\\cse486\\cse486_pa3\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi-v4\\ic_launcher.png",
-        "source": "C:\\home\\david\\Documents\\cse486\\cse486_pa3\\app\\src\\main\\res\\drawable-xhdpi\\ic_launcher.png"
+        "merged": "/home/david/Documents/cse486/cse486_pa3/app/build/intermediates/res/merged/debug/drawable-xhdpi-v4/ic_launcher.png",
+        "source": "/home/david/Documents/cse486/cse486_pa3/app/src/main/res/drawable-xhdpi/ic_launcher.png"
     },
     {
-        "merged": "C:\\Users\\david\\Documents\\486\\cse486_pa3\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi-v4\\ic_launcher.png",
-        "source": "C:\\Users\\david\\Documents\\486\\cse486_pa3\\app\\src\\main\\res\\drawable-xhdpi\\ic_launcher.png"
+        "merged": "/home/david/Documents/cse486/cse486_pa3/C:\\home\\david\\Documents\\cse486\\cse486_pa3\\C:\\Users\\david\\Documents\\486\\cse486_pa3\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi-v4\\ic_launcher.png",
+        "source": "/home/david/Documents/cse486/cse486_pa3/C:\\home\\david\\Documents\\cse486\\cse486_pa3\\C:\\Users\\david\\Documents\\486\\cse486_pa3\\app\\src\\main\\res\\drawable-xhdpi\\ic_launcher.png"
     },
     {
-        "merged": "C:\\home\\david\\Documents\\cse486\\cse486_pa3\\C:\\Users\\david\\Documents\\486\\cse486_pa3\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi-v4\\ic_launcher.png",
-        "source": "C:\\home\\david\\Documents\\cse486\\cse486_pa3\\C:\\Users\\david\\Documents\\486\\cse486_pa3\\app\\src\\main\\res\\drawable-xhdpi\\ic_launcher.png"
+        "merged": "/home/david/Documents/cse486/cse486_pa3/C:\\Users\\david\\Documents\\486\\cse486_pa3\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi-v4\\ic_launcher.png",
+        "source": "/home/david/Documents/cse486/cse486_pa3/C:\\Users\\david\\Documents\\486\\cse486_pa3\\app\\src\\main\\res\\drawable-xhdpi\\ic_launcher.png"
     },
     {
-        "merged": "C:\\home\\david\\Documents\\cse486\\cse486_pa3\\C:\\home\\david\\Documents\\cse486\\cse486_pa3\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi-v4\\ic_launcher.png",
-        "source": "C:\\home\\david\\Documents\\cse486\\cse486_pa3\\C:\\home\\david\\Documents\\cse486\\cse486_pa3\\app\\src\\main\\res\\drawable-xhdpi\\ic_launcher.png"
+        "merged": "/home/david/Documents/cse486/cse486_pa3/C:\\home\\david\\Documents\\cse486\\cse486_pa3\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi-v4\\ic_launcher.png",
+        "source": "/home/david/Documents/cse486/cse486_pa3/C:\\home\\david\\Documents\\cse486\\cse486_pa3\\app\\src\\main\\res\\drawable-xhdpi\\ic_launcher.png"
+    },
+    {
+        "merged": "/home/david/Documents/cse486/cse486_pa3/C:\\home\\david\\Documents\\cse486\\cse486_pa3\\C:\\home\\david\\Documents\\cse486\\cse486_pa3\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi-v4\\ic_launcher.png",
+        "source": "/home/david/Documents/cse486/cse486_pa3/C:\\home\\david\\Documents\\cse486\\cse486_pa3\\C:\\home\\david\\Documents\\cse486\\cse486_pa3\\app\\src\\main\\res\\drawable-xhdpi\\ic_launcher.png"
     }
 ]
