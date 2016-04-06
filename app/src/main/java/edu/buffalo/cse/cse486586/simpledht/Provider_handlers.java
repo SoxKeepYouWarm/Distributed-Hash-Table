@@ -84,7 +84,7 @@ public class Provider_handlers {
                     send_message(response_message, sender_port);
 
                     // TODO update successor node's predecessor pointer
-                    Log.d(TAG, "responded to join request");
+                    Log.d(TAG, "responded to join request: between_successor_node");
                     break;
                 case BETWEEN_PREDECESSOR_NODE:
                     // return predecessor and successor info for sender
@@ -95,14 +95,19 @@ public class Provider_handlers {
                     send_message(response_message, sender_port);
 
                     // TODO update predecessors node's successor pointer
-                    Log.d(TAG, "responded to join request");
+                    Log.d(TAG, "responded to join request: between_predecessor_node");
                     break;
+                default:
+                    Log.e(TAG, "HANDLE_JOIN_REQUEST: error as first_node");
 
             }
 
         } else if (NODE_POSITION == LAST_NODE) {
 
-            switch (find_relationship(sender_node_id)) {
+            int relationship = find_relationship(sender_node_id);
+            Message response_message;
+
+            switch (relationship) {
 
                 case IS_MY_NODE:
                 case IS_SUCCESSOR_NODE:
@@ -116,15 +121,28 @@ public class Provider_handlers {
                     break;
                 case BETWEEN_SUCCESSOR_NODE:
                     // return predecessor and successor info for sender
-                    Message response_message = new Message(Message.JOIN_RESPONSE, SimpleDhtProvider.MY_PORT);
+                    response_message = new Message(Message.JOIN_RESPONSE, SimpleDhtProvider.MY_PORT);
                     response_message.insert_args(Message.PREDECESSOR, SimpleDhtProvider.MY_PORT);
                     response_message.insert_args(Message.SUCCESSOR, SimpleDhtProvider.SUCCESSOR_PORT);
 
                     send_message(response_message, sender_port);
 
                     // TODO update successor node's predecessor pointer
-                    Log.d(TAG, "responded to join request");
+                    Log.d(TAG, "responded to join request: between_successor_node");
                     break;
+                case BETWEEN_PREDECESSOR_NODE:
+                    // return predecessor and successor info for sender
+                    response_message = new Message(Message.JOIN_RESPONSE, SimpleDhtProvider.MY_PORT);
+                    response_message.insert_args(Message.PREDECESSOR, SimpleDhtProvider.PREDECESSOR_PORT);
+                    response_message.insert_args(Message.SUCCESSOR, SimpleDhtProvider.MY_PORT);
+
+                    send_message(response_message, sender_port);
+
+                    // TODO update successor node's predecessor pointer
+                    Log.d(TAG, "responded to join request: between_predecessor_node");
+                    break;
+                default:
+                    Log.e(TAG, "HANDLE_JOIN_REQUEST: error as last_node, relationship: " + relationship);
 
             }
 
@@ -154,7 +172,7 @@ public class Provider_handlers {
                     send_message(response_message, sender_port);
 
                     // TODO update successor node's predecessor pointer
-                    Log.d(TAG, "responded to join request");
+                    Log.d(TAG, "responded to join request: between_successor_node");
                     break;
                 case BETWEEN_PREDECESSOR_NODE:
                     // return predecessor and successor info for sender
@@ -165,8 +183,10 @@ public class Provider_handlers {
                     send_message(response_message, sender_port);
 
                     // TODO update successor node's predecessor pointer
-                    Log.d(TAG, "responded to join request");
+                    Log.d(TAG, "responded to join request: between_predecessor_node");
                     break;
+                default:
+                    Log.e(TAG, "HANDLE_JOIN_REQUEST: error as middle_node");
             }
 
         }

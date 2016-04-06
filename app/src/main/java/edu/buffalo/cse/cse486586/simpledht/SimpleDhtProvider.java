@@ -60,6 +60,7 @@ public class SimpleDhtProvider extends ContentProvider {
 
             Log.d(TAG, "initiating server task");
             ServerSocket serverSocket = new ServerSocket(SERVER_PORT);
+            serverSocket.setReuseAddress(true);
             Server_param_wrapper params = new Server_param_wrapper(serverSocket, this);
             new ServerTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, params);
         } catch (IOException e) {
