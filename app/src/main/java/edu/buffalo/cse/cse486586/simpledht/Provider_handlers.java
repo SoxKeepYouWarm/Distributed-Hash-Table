@@ -17,7 +17,11 @@ public class Provider_handlers {
 
     private static int NODE_POSITION;
 
-    static SimpleDhtProvider provider_reference;
+    SimpleDhtProvider provider_reference;
+
+    public Provider_handlers(SimpleDhtProvider provider) {
+        this.provider_reference = provider;
+    }
 
     public static void send_message(Message message, String destination_port) {
         Client_param_wrapper params = new Client_param_wrapper(message, destination_port);
@@ -217,8 +221,7 @@ public class Provider_handlers {
 
     }
 
-    public static void route_incoming_message(SimpleDhtProvider provider, Message message) {
-        provider_reference = provider;
+    public static void route_incoming_message(Message message) {
         if (SimpleDhtProvider.CONNECTED) determine_node_position();
 
         if (message.getCommand().equals(Message.QUERY)) handle_query(message);

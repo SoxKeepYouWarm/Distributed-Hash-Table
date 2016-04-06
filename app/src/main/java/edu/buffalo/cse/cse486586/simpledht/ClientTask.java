@@ -28,6 +28,7 @@ public class ClientTask extends AsyncTask<Client_param_wrapper, Void, Void> {
             out.println(message.stringify());
 
             out.flush();
+            out.close();
             client_socket.close();
         } catch (SocketException e) {
             Log.e(TAG, "Socket exception (timeout): " + e.getMessage());
@@ -35,7 +36,7 @@ public class ClientTask extends AsyncTask<Client_param_wrapper, Void, Void> {
             Log.e(TAG, "io exception connecting client socket: " + e.getMessage());
         }
 
-        Log.d(TAG, "successfully sent command: " + message.getCommand() + " to port: " + destination_port);
+        Log.d(TAG, "CLIENT_TASK: sent " + message.stringify());
         return null;
 
     }

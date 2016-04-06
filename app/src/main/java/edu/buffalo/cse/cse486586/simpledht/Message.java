@@ -38,15 +38,16 @@ public class Message {
         this.command = command;
         this.sender_port = sender_port;
 
-        String data_string = message_components[2];
+        if (message_components.length == 3) {
+            String data_string = message_components[2];
 
-        String[] pairs = data_string.split(PAIR_BREAKPOINT);
+            String[] pairs = data_string.split(PAIR_BREAKPOINT);
 
-        for (String pair: pairs) {
-            String[] key_val = pair.split(KEY_VAL_BREAKPOINT);
-            data.put(key_val[0], key_val[1]);
+            for (String pair: pairs) {
+                String[] key_val = pair.split(KEY_VAL_BREAKPOINT);
+                data.put(key_val[0], key_val[1]);
+            }
         }
-
 
     }
 

@@ -105,7 +105,7 @@ public class SimpleDhtProvider extends ContentProvider {
         Message delete_message = new Message(Message.DELETE, MY_PORT);
         delete_message.insert_args(Message.SELECTION, selection);
 
-        Provider_handlers.route_incoming_message(this, delete_message);
+        Provider_handlers.route_incoming_message(delete_message);
 
         return 0;
     }
@@ -124,7 +124,7 @@ public class SimpleDhtProvider extends ContentProvider {
         Message insert_message = new Message(Message.INSERT, MY_PORT);
         insert_message.insert_args(values.getAsString("key"), values.getAsString("value"));
 
-        Provider_handlers.route_incoming_message(this, insert_message);
+        Provider_handlers.route_incoming_message(insert_message);
 
         return null;
     }
@@ -138,7 +138,7 @@ public class SimpleDhtProvider extends ContentProvider {
         Message query_message = new Message(Message.QUERY, MY_PORT);
         query_message.insert_args(Message.SELECTION, selection);
 
-        Provider_handlers.route_incoming_message(this, query_message);
+        Provider_handlers.route_incoming_message(query_message);
 
         return null;
     }

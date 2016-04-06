@@ -24,16 +24,23 @@ public class ServerTask extends AsyncTask<Server_param_wrapper, String, Void> {
                 Socket clientSocket = serverSocket.accept();
                 BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 
-                Log.d(TAG, "server accepted client");
+                Log.d(TAG, "SERVER_TASK: accepted client, receiving message");
 
                 String message;
                 while ((message = in.readLine()) != null) {
 
-                    Message incoming_message = new Message(message);
-                    Provider_handlers.route_incoming_message(provider_reference, incoming_message);
+                    publishProgress(message);
+                    //Message incoming_message = new Message(message);
+                    //Log.d(TAG, "SERVER_TASK: received message: " + incoming_message.stringify());
+                    //Provider_handlers.route_incoming_message(incoming_message);
 
-                    publishProgress(incoming_message.stringify());
+                    //publishProgress(incoming_message.stringify());
                 }
+
+                in.close();
+                clientSocket.close();
+                Log.d(TAG, "SERVER_TASK: stopped receiving message");
+
             }
         } catch (NullPointerException err) {
             Log.e(TAG, "client socket was not initialized properly");
@@ -41,12 +48,13 @@ public class ServerTask extends AsyncTask<Server_param_wrapper, String, Void> {
             Log.e(TAG, "client socket was not initialized properly");
         }
 
-
         return null;
     }
 
     protected void onProgressUpdate(String...strings) {
         String msg = strings[0];
-        Log.d(TAG, "RECEIVED MESSAGE: " + msg);
+        Message incoming_message = new Message(msg);
+        Log.d(TAG, "SERVER_TASK: received message: " + incoming_message.stringify());
+        Provider_handlers.route_incoming_message(incoming_message);
     }
 }
