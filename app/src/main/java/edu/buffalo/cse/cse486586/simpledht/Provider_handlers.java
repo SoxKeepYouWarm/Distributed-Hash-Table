@@ -83,6 +83,10 @@ public class Provider_handlers {
 
                     send_message(response_message, sender_port);
 
+                    // update my successor value
+                    SimpleDhtProvider.SUCCESSOR_PORT = sender_port;
+                    SimpleDhtProvider.SUCCESSOR_NODE_ID = sender_node_id;
+
                     // TODO update successor node's predecessor pointer
                     Log.d(TAG, "responded to join request: between_successor_node");
                     break;
@@ -93,6 +97,10 @@ public class Provider_handlers {
                     response_message.insert_args(Message.SUCCESSOR, SimpleDhtProvider.MY_PORT);
 
                     send_message(response_message, sender_port);
+
+                    // update my predecessor value
+                    SimpleDhtProvider.PREDECESSOR_PORT = sender_port;
+                    SimpleDhtProvider.PREDECESSOR_NODE_ID = sender_node_id;
 
                     // TODO update predecessors node's successor pointer
                     Log.d(TAG, "responded to join request: between_predecessor_node");
@@ -127,6 +135,10 @@ public class Provider_handlers {
 
                     send_message(response_message, sender_port);
 
+                    // update my successor value
+                    SimpleDhtProvider.SUCCESSOR_PORT = sender_port;
+                    SimpleDhtProvider.SUCCESSOR_NODE_ID = sender_node_id;
+
                     // TODO update successor node's predecessor pointer
                     Log.d(TAG, "responded to join request: between_successor_node");
                     break;
@@ -137,6 +149,10 @@ public class Provider_handlers {
                     response_message.insert_args(Message.SUCCESSOR, SimpleDhtProvider.MY_PORT);
 
                     send_message(response_message, sender_port);
+
+                    // update my successor value
+                    SimpleDhtProvider.PREDECESSOR_PORT = sender_port;
+                    SimpleDhtProvider.PREDECESSOR_NODE_ID = sender_node_id;
 
                     // TODO update successor node's predecessor pointer
                     Log.d(TAG, "responded to join request: between_predecessor_node");
@@ -171,6 +187,10 @@ public class Provider_handlers {
 
                     send_message(response_message, sender_port);
 
+                    // update my successor value
+                    SimpleDhtProvider.SUCCESSOR_PORT = sender_port;
+                    SimpleDhtProvider.SUCCESSOR_NODE_ID = sender_node_id;
+
                     // TODO update successor node's predecessor pointer
                     Log.d(TAG, "responded to join request: between_successor_node");
                     break;
@@ -181,6 +201,10 @@ public class Provider_handlers {
                     response_message.insert_args(Message.SUCCESSOR, SimpleDhtProvider.SUCCESSOR_PORT);
 
                     send_message(response_message, sender_port);
+
+                    // update my successor value
+                    SimpleDhtProvider.PREDECESSOR_PORT = sender_port;
+                    SimpleDhtProvider.PREDECESSOR_NODE_ID = sender_node_id;
 
                     // TODO update successor node's predecessor pointer
                     Log.d(TAG, "responded to join request: between_predecessor_node");
