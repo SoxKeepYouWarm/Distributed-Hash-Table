@@ -62,6 +62,7 @@ public class Provider_handlers {
         } else if (NODE_POSITION == FIRST_NODE) {
 
             Message response_message;
+            Message update_message;
 
             switch (find_relationship(sender_node_id)) {
 
@@ -87,7 +88,12 @@ public class Provider_handlers {
                     SimpleDhtProvider.SUCCESSOR_PORT = sender_port;
                     SimpleDhtProvider.SUCCESSOR_NODE_ID = sender_node_id;
 
-                    // TODO update successor node's predecessor pointer
+                    // update successor node's predecessor pointer
+                    update_message = new Message(Message.UPDATE_POINTERS, SimpleDhtProvider.MY_PORT);
+                    update_message.insert_args(Message.PREDECESSOR, sender_port);
+                    send_message(update_message, SimpleDhtProvider.SUCCESSOR_PORT);
+
+                    Log.d(TAG, "sent pointer update for successor's node pointer to predecessor node");
                     Log.d(TAG, "responded to join request: between_successor_node");
                     break;
                 case BETWEEN_PREDECESSOR_NODE:
@@ -102,7 +108,12 @@ public class Provider_handlers {
                     SimpleDhtProvider.PREDECESSOR_PORT = sender_port;
                     SimpleDhtProvider.PREDECESSOR_NODE_ID = sender_node_id;
 
-                    // TODO update predecessors node's successor pointer
+                    // update predecessors node's successor pointer
+                    update_message = new Message(Message.UPDATE_POINTERS, SimpleDhtProvider.MY_PORT);
+                    update_message.insert_args(Message.SUCCESSOR, sender_port);
+                    send_message(update_message, SimpleDhtProvider.PREDECESSOR_PORT);
+
+                    Log.d(TAG, "sent pointer update for predecessor's node pointer to successor node");
                     Log.d(TAG, "responded to join request: between_predecessor_node");
                     break;
                 default:
@@ -114,6 +125,7 @@ public class Provider_handlers {
 
             int relationship = find_relationship(sender_node_id);
             Message response_message;
+            Message update_message;
 
             switch (relationship) {
 
@@ -139,7 +151,12 @@ public class Provider_handlers {
                     SimpleDhtProvider.SUCCESSOR_PORT = sender_port;
                     SimpleDhtProvider.SUCCESSOR_NODE_ID = sender_node_id;
 
-                    // TODO update successor node's predecessor pointer
+                    // update successor node's predecessor pointer
+                    update_message = new Message(Message.UPDATE_POINTERS, SimpleDhtProvider.MY_PORT);
+                    update_message.insert_args(Message.PREDECESSOR, sender_port);
+                    send_message(update_message, SimpleDhtProvider.SUCCESSOR_PORT);
+
+                    Log.d(TAG, "sent pointer update for successor's node pointer to predecessor node");
                     Log.d(TAG, "responded to join request: between_successor_node");
                     break;
                 case BETWEEN_PREDECESSOR_NODE:
@@ -154,7 +171,12 @@ public class Provider_handlers {
                     SimpleDhtProvider.PREDECESSOR_PORT = sender_port;
                     SimpleDhtProvider.PREDECESSOR_NODE_ID = sender_node_id;
 
-                    // TODO update successor node's predecessor pointer
+                    // update predecessor node's successor pointer
+                    update_message = new Message(Message.UPDATE_POINTERS, SimpleDhtProvider.MY_PORT);
+                    update_message.insert_args(Message.SUCCESSOR, sender_port);
+                    send_message(update_message, SimpleDhtProvider.PREDECESSOR_PORT);
+
+                    Log.d(TAG, "sent pointer update for predecessor's node pointer to successor node");
                     Log.d(TAG, "responded to join request: between_predecessor_node");
                     break;
                 default:
@@ -165,6 +187,7 @@ public class Provider_handlers {
         } else if (NODE_POSITION == MIDDLE_NODE) {
 
             Message response_message;
+            Message update_message;
 
             switch (find_relationship(sender_node_id)) {
 
@@ -191,7 +214,12 @@ public class Provider_handlers {
                     SimpleDhtProvider.SUCCESSOR_PORT = sender_port;
                     SimpleDhtProvider.SUCCESSOR_NODE_ID = sender_node_id;
 
-                    // TODO update successor node's predecessor pointer
+                    // update successor node's predecessor pointer
+                    update_message = new Message(Message.UPDATE_POINTERS, SimpleDhtProvider.MY_PORT);
+                    update_message.insert_args(Message.PREDECESSOR, sender_port);
+                    send_message(update_message, SimpleDhtProvider.SUCCESSOR_PORT);
+
+                    Log.d(TAG, "sent pointer update for successor's node pointer to predecessor node");
                     Log.d(TAG, "responded to join request: between_successor_node");
                     break;
                 case BETWEEN_PREDECESSOR_NODE:
@@ -206,7 +234,12 @@ public class Provider_handlers {
                     SimpleDhtProvider.PREDECESSOR_PORT = sender_port;
                     SimpleDhtProvider.PREDECESSOR_NODE_ID = sender_node_id;
 
-                    // TODO update successor node's predecessor pointer
+                    // update predecessor node's successor pointer
+                    update_message = new Message(Message.UPDATE_POINTERS, SimpleDhtProvider.MY_PORT);
+                    update_message.insert_args(Message.SUCCESSOR, sender_port);
+                    send_message(update_message, SimpleDhtProvider.PREDECESSOR_PORT);
+
+                    Log.d(TAG, "sent pointer update for predecessor's node pointer to successor node");
                     Log.d(TAG, "responded to join request: between_predecessor_node");
                     break;
                 default:
@@ -246,6 +279,14 @@ public class Provider_handlers {
 
     }
 
+    public static void handle_update_pointers(Message message) {
+
+    }
+
+    public static void handle_update_keys(Message message) {
+
+    }
+
     public static void determine_node_position() {
 
         if (SimpleDhtProvider.MY_NODE_ID.equals(SimpleDhtProvider.SUCCESSOR_NODE_ID) &&
@@ -273,6 +314,8 @@ public class Provider_handlers {
         else if (message.getCommand().equals(Message.DELETE)) handle_delete(message);
         else if (message.getCommand().equals(Message.JOIN)) handle_join_request(message);
         else if (message.getCommand().equals(Message.JOIN_RESPONSE)) handle_join_response(message);
+        else if (message.getCommand().equals(Message.UPDATE_POINTERS)) handle_update_pointers(message);
+        else if (message.getCommand().equals(Message.UPDATE_KEYS)) handle_update_keys(message);
         else Log.e(TAG, "ROUTE_INCOMING_MESSAGE: message was not routed correctly");
     }
 

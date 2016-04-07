@@ -11,6 +11,8 @@ public class Message {
     public static String INSERT = "insert";
     public static String QUERY = "query";
     public static String DELETE = "delete";
+    public static String UPDATE_POINTERS = "update_pointers";
+    public static String UPDATE_KEYS = "update_keys";
 
     public static String PREDECESSOR = "predecessor";
     public static String SUCCESSOR = "successor";
