@@ -1,6 +1,6 @@
 [
     {
-        "outputFile": "C:\\Users\\david\\Documents\\486\\cse486_pa3\\app\\build\\intermediates\\res\\merged\\debug\\values-v11\\values-v11.xml",
+        "outputFile": "/home/david/Documents/cse486/cse486_pa3/app/build/intermediates/res/merged/debug/values-v11/values-v11.xml",
         "map": [
             {
                 "to": {
@@ -12,14 +12,14 @@
                     "endOffset": 187
                 },
                 "from": {
-                    "file": "C:\\Users\\david\\Documents\\486\\cse486_pa3\\app\\src\\main\\res\\values-v11\\styles.xml",
+                    "file": "/home/david/Documents/cse486/cse486_pa3/app/src/main/res/values-v11/styles.xml",
                     "position": {
                         "startLine": 6,
                         "startColumn": 4,
-                        "startOffset": 183,
+                        "startOffset": 177,
                         "endLine": 8,
                         "endColumn": 12,
-                        "endOffset": 317
+                        "endOffset": 309
                     }
                 }
             }

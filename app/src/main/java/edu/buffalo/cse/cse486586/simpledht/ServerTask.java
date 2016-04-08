@@ -30,21 +30,16 @@ public class ServerTask extends AsyncTask<Server_param_wrapper, String, Void> {
 
                 String message;
                 while ((message = in.readLine()) != null) {
-                    Log.d(TAG, "inside server while read loop");
-                    //publishProgress(message);
-
+                    Log.d(TAG, "SERVER_TASK: received message: " + message);
                     Message incoming_message = new Message(message);
-                    Log.d(TAG, "SERVER_TASK: received message: " + incoming_message.stringify());
 
                     out.println("ACK");
                     Log.d(TAG, "ACK'ed back to client");
 
-                    Provider_handlers.route_incoming_message(incoming_message);
+                    provider_reference.handlers.route_incoming_message(incoming_message);
 
                 }
 
-                //clientSocket.close();
-                Log.d(TAG, "SERVER_TASK: finished read while loop and closed client socket");
             }
         } catch (NullPointerException err) {
             Log.e(TAG, err.getMessage());
@@ -56,9 +51,9 @@ public class ServerTask extends AsyncTask<Server_param_wrapper, String, Void> {
     }
 
     protected void onProgressUpdate(String...strings) {
-        String msg = strings[0];
-        Message incoming_message = new Message(msg);
-        Log.d(TAG, "SERVER_TASK: received message: " + incoming_message.stringify());
-        Provider_handlers.route_incoming_message(incoming_message);
+        //String msg = strings[0];
+        //Message incoming_message = new Message(msg);
+        //Log.d(TAG, "SERVER_TASK: received message: " + incoming_message.stringify());
+        //Provider_handlers.route_incoming_message(incoming_message);
     }
 }

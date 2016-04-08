@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.text.method.ScrollingMovementMethod;
 import android.view.Menu;
+import android.view.View;
 import android.widget.TextView;
 
 public class SimpleDhtActivity extends Activity {
@@ -17,6 +18,15 @@ public class SimpleDhtActivity extends Activity {
         tv.setMovementMethod(new ScrollingMovementMethod());
         findViewById(R.id.button3).setOnClickListener(
                 new OnTestClickListener(tv, getContentResolver()));
+
+        final Debug debugger = new Debug(getContentResolver(), tv);
+
+        findViewById(R.id.debug_pointers).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                debugger.debug_node_pointers();
+            }
+        });
     }
 
     @Override

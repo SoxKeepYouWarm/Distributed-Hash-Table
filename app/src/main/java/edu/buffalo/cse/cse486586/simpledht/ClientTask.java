@@ -19,6 +19,7 @@ public class ClientTask extends AsyncTask<Client_param_wrapper, Void, Void> {
     @Override
     protected Void doInBackground(Client_param_wrapper... params) {
 
+        Log.d(TAG, "CLIENT_TASK: client task was launched");
         Message message = params[0].message;
         String destination_port = params[0].port;
 

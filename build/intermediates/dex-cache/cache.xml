@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="/home/david/Documents/cse486/cse486_pa3/app/build/intermediates/incremental-runtime-classes/debug/instant-run.jar"
+        jumboMode="true"
+        revision="21.1.2"
+        sha1="066e399b12e8dfd64bb168880dbaaed75564e068">
+        <dex dex="/home/david/Documents/cse486/cse486_pa3/app/build/intermediates/pre-dexed/debug/instant-run_c95d41d212e3d63d1578d78d2b8dd4ed946053b7.jar" />
+    </item>
+    <item
+        jar="/home/david/Documents/cse486/cse486_pa3/app/build/intermediates/incremental-classes/debug/instant-run-bootstrap.jar"
+        jumboMode="true"
+        revision="21.1.2"
+        sha1="a0eea8b8ffc0cc00740dab13d61f940caa7a381e">
+        <dex dex="/home/david/Documents/cse486/cse486_pa3/app/build/intermediates/pre-dexed/debug/instant-run-bootstrap_d62d01ace53863fee4135b61737f10259cd80618.jar" />
+    </item>
+
+</items>

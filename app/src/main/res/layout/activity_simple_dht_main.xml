@@ -16,17 +16,22 @@
         android:id="@+id/button2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
+        android:layout_toRightOf="@id/button1"
         android:text="@string/button_gdump" />
 
     <Button
         android:id="@+id/button3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@id/button2"
         android:text="@string/button_test" />
+
+    <Button
+        android:id="@+id/debug_pointers"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/button3"
+        android:text="debug pointers" />
 
     <TextView
         android:id="@+id/textView1"

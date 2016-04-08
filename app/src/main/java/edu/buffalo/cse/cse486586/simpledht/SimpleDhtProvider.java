@@ -4,11 +4,14 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.security.NoSuchAlgorithmException;
 import java.util.Hashtable;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.MatrixCursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.telephony.TelephonyManager;
@@ -21,19 +24,22 @@ public class SimpleDhtProvider extends ContentProvider {
 
     public static String MASTER_NODE_PORT = "11108";
 
-    public static String MY_PORT;
-    public static String MY_NODE_ID;
+    public String MY_PORT;
+    public String MY_NODE_ID;
 
-    public static String PREDECESSOR_PORT;
-    public static String PREDECESSOR_NODE_ID;
+    public String PREDECESSOR_PORT;
+    public String PREDECESSOR_NODE_ID;
 
-    public static String SUCCESSOR_PORT;
-    public static String SUCCESSOR_NODE_ID;
+    public String SUCCESSOR_PORT;
+    public String SUCCESSOR_NODE_ID;
 
-    public static boolean CONNECTED = false;
+    public boolean CONNECTED = false;
 
     Hashtable<String, String> datastore = new Hashtable<String, String>();
     Hashtable<String, String> providers = new Hashtable<String, String>();
+
+    public Provider_handlers handlers;
+    public Util util;
 
     private void set_my_port() {
         try {
@@ -48,7 +54,7 @@ public class SimpleDhtProvider extends ContentProvider {
 
     private void set_my_node_id() {
         try{
-            MY_NODE_ID=Provider_handlers.genHash(MY_PORT);
+            MY_NODE_ID=Util.genHash(MY_PORT);
             Log.d(TAG, "node id: " + MY_NODE_ID);
         }catch(NoSuchAlgorithmException err){
             Log.e(TAG, "SET_NODE_ID: error setting node id");
@@ -75,6 +81,8 @@ public class SimpleDhtProvider extends ContentProvider {
         set_my_node_id();
         start_server_task();
 
+        this.handlers = new Provider_handlers(this);
+
         Log.d(TAG, "PORT: " + MY_PORT + " ID: " + MY_NODE_ID);
 
         // check if this device is master node
@@ -83,8 +91,8 @@ public class SimpleDhtProvider extends ContentProvider {
             SUCCESSOR_PORT = MY_PORT;
             CONNECTED = true;
             try {
-                PREDECESSOR_NODE_ID = Provider_handlers.genHash(MY_PORT);
-                SUCCESSOR_NODE_ID = Provider_handlers.genHash(MY_PORT);
+                PREDECESSOR_NODE_ID = Util.genHash(MY_PORT);
+                SUCCESSOR_NODE_ID = Util.genHash(MY_PORT);
             } catch (NoSuchAlgorithmException err) {
                 Log.e(TAG, "error setting predecessor node id");
             }
@@ -92,7 +100,7 @@ public class SimpleDhtProvider extends ContentProvider {
         } else {
             // connect to master node
             Message join_request = new Message(Message.JOIN, MY_PORT);
-            Provider_handlers.send_message(join_request, MASTER_NODE_PORT);
+            handlers.send_message(join_request, MASTER_NODE_PORT);
 
         }
 
@@ -106,7 +114,7 @@ public class SimpleDhtProvider extends ContentProvider {
         Message delete_message = new Message(Message.DELETE, MY_PORT);
         delete_message.insert_args(Message.SELECTION, selection);
 
-        Provider_handlers.route_incoming_message(delete_message);
+        handlers.route_incoming_message(delete_message);
 
         return 0;
     }
@@ -125,23 +133,59 @@ public class SimpleDhtProvider extends ContentProvider {
         Message insert_message = new Message(Message.INSERT, MY_PORT);
         insert_message.insert_args(values.getAsString("key"), values.getAsString("value"));
 
-        Provider_handlers.route_incoming_message(insert_message);
+        handlers.route_incoming_message(insert_message);
 
         return null;
     }
 
 
+
+    CountDownLatch query_latch;
+    Message query_result;
+    public void release_query_latch() {
+        query_latch.countDown();
+    }
+
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs,
             String sortOrder) {
-        Log.d(TAG, "query selection is: " + selection);
+        Log.d(TAG, "QUERY: selection is: " + selection);
 
-        Message query_message = new Message(Message.QUERY, MY_PORT);
-        query_message.insert_args(Message.SELECTION, selection);
+        query_latch = new CountDownLatch(1);
 
-        Provider_handlers.route_incoming_message(query_message);
+        String command;
 
-        return null;
+        if (selection.equals("*")) command = Message.QUERY_ALL;
+        else if (selection.equals("@")) command = Message.QUERY_LOCAL;
+        else if (selection.equals(Message.DEBUG_NODE_POINTERS)) command = Message.DEBUG_NODE_POINTERS;
+        else command = Message.QUERY;
+
+        Message query_message = new Message(command, MY_PORT);
+        if (command.equals(Message.QUERY)) query_message.insert_args(Message.SELECTION, selection);
+
+        handlers.route_incoming_message(query_message);
+
+        try {
+            Log.d(TAG, "QUERY: waiting for query result");
+            query_latch.await(50000L, TimeUnit.SECONDS);
+        } catch (InterruptedException err) {
+            Log.e(TAG, "QUERY: query latch timed out");
+            String[] columns= {"key", "value"};
+            MatrixCursor result= new MatrixCursor(columns);
+            return result;
+        }
+        Log.d(TAG, "QUERY: latch has been raised");
+        Log.d(TAG, "QUERY: result_message: " + query_result.stringify());
+
+        String[] columns= {"key", "value"};
+        MatrixCursor result= new MatrixCursor(columns);
+
+        for (String key: query_result.get_args().keySet()) {
+            String[] entry = { key, query_result.get_args().get(key) };
+            result.addRow(entry);
+        }
+
+        return result;
     }
 
     @Override

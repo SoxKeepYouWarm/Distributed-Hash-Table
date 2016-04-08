@@ -6,17 +6,33 @@ import java.util.Map;
 
 public class Message {
 
+    /* COMMANDS */
     public static String JOIN = "join";
     public static String JOIN_RESPONSE = "join_response";
+
     public static String INSERT = "insert";
-    public static String QUERY = "query";
     public static String DELETE = "delete";
     public static String UPDATE_POINTERS = "update_pointers";
     public static String UPDATE_KEYS = "update_keys";
 
+    public static String QUERY = "query";
+    public static String QUERY_RESPONSE = "query_response";
+
+    public static String QUERY_ALL = "query_all";
+    public static String QUERY_ALL_RESPONSE = "query_all_response";
+
+    public static String QUERY_LOCAL = "query_local";
+    public static String QUERY_LOCAL_RESPONSE = "query_local_response";
+    /* COMMANDS */
+
+    /* ARGUMENTS */
     public static String PREDECESSOR = "predecessor";
     public static String SUCCESSOR = "successor";
     public static String SELECTION = "selection";
+    /* ARGUMENTS */
+
+    public static String DEBUG_NODE_POINTERS = new String(Character.toChars(203));
+    public static String DEBUG_NODE_POINTERS_RESPONSE = "debug_node_pointers_response";
 
     private static String SECTION_BREAKPOINT = new String(Character.toChars(200));
     private static String KEY_VAL_BREAKPOINT = new String(Character.toChars(201));
@@ -79,8 +95,16 @@ public class Message {
         return this.command;
     }
 
+    public void setCommand(String new_command) {
+        this.command = new_command;
+    }
+
     public String getSender_port() {
         return this.sender_port;
+    }
+
+    public void setSender_port(String sender_port) {
+        this.sender_port = sender_port;
     }
 
     public HashMap<String, String> get_args() {

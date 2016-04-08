@@ -1,6 +1,6 @@
 [
     {
-        "outputFile": "C:\\Users\\david\\Documents\\486\\cse486_pa3\\app\\build\\intermediates\\res\\merged\\debug\\values\\values.xml",
+        "outputFile": "/home/david/Documents/cse486/cse486_pa3/app/build/intermediates/res/merged/debug/values/values.xml",
         "map": [
             {
                 "to": {
@@ -11,13 +11,13 @@
                     "endOffset": 97
                 },
                 "from": {
-                    "file": "C:\\Users\\david\\Documents\\486\\cse486_pa3\\app\\src\\main\\res\\values\\strings.xml",
+                    "file": "/home/david/Documents/cse486/cse486_pa3/app/src/main/res/values/strings.xml",
                     "position": {
                         "startLine": 3,
                         "startColumn": 4,
-                        "startOffset": 59,
+                        "startOffset": 56,
                         "endColumn": 46,
-                        "endOffset": 101
+                        "endOffset": 98
                     }
                 }
             },
@@ -30,13 +30,13 @@
                     "endOffset": 144
                 },
                 "from": {
-                    "file": "C:\\Users\\david\\Documents\\486\\cse486_pa3\\app\\src\\main\\res\\values\\strings.xml",
+                    "file": "/home/david/Documents/cse486/cse486_pa3/app/src/main/res/values/strings.xml",
                     "position": {
                         "startLine": 6,
                         "startColumn": 4,
-                        "startOffset": 207,
+                        "startOffset": 201,
                         "endColumn": 46,
-                        "endOffset": 249
+                        "endOffset": 243
                     }
                 }
             },
@@ -49,13 +49,13 @@
                     "endOffset": 191
                 },
                 "from": {
-                    "file": "C:\\Users\\david\\Documents\\486\\cse486_pa3\\app\\src\\main\\res\\values\\strings.xml",
+                    "file": "/home/david/Documents/cse486/cse486_pa3/app/src/main/res/values/strings.xml",
                     "position": {
                         "startLine": 5,
                         "startColumn": 4,
-                        "startOffset": 159,
+                        "startOffset": 154,
                         "endColumn": 46,
-                        "endOffset": 201
+                        "endOffset": 196
                     }
                 }
             },
@@ -68,13 +68,13 @@
                     "endOffset": 236
                 },
                 "from": {
-                    "file": "C:\\Users\\david\\Documents\\486\\cse486_pa3\\app\\src\\main\\res\\values\\strings.xml",
+                    "file": "/home/david/Documents/cse486/cse486_pa3/app/src/main/res/values/strings.xml",
                     "position": {
                         "startLine": 7,
                         "startColumn": 4,
-                        "startOffset": 255,
+                        "startOffset": 248,
                         "endColumn": 44,
-                        "endOffset": 295
+                        "endOffset": 288
                     }
                 }
             },
@@ -87,13 +87,13 @@
                     "endOffset": 287
                 },
                 "from": {
-                    "file": "C:\\Users\\david\\Documents\\486\\cse486_pa3\\app\\src\\main\\res\\values\\strings.xml",
+                    "file": "/home/david/Documents/cse486/cse486_pa3/app/src/main/res/values/strings.xml",
                     "position": {
                         "startLine": 4,
                         "startColumn": 4,
-                        "startOffset": 107,
+                        "startOffset": 103,
                         "endColumn": 50,
-                        "endOffset": 153
+                        "endOffset": 149
                     }
                 }
             },
@@ -107,14 +107,14 @@
                     "endOffset": 578
                 },
                 "from": {
-                    "file": "C:\\Users\\david\\Documents\\486\\cse486_pa3\\app\\src\\main\\res\\values\\styles.xml",
+                    "file": "/home/david/Documents/cse486/cse486_pa3/app/src/main/res/values/styles.xml",
                     "position": {
                         "startLine": 6,
                         "startColumn": 4,
-                        "startOffset": 192,
+                        "startOffset": 186,
                         "endLine": 12,
                         "endColumn": 12,
-                        "endOffset": 484
+                        "endOffset": 472
                     }
                 }
             },
@@ -128,14 +128,14 @@
                     "endOffset": 738
                 },
                 "from": {
-                    "file": "C:\\Users\\david\\Documents\\486\\cse486_pa3\\app\\src\\main\\res\\values\\styles.xml",
+                    "file": "/home/david/Documents/cse486/cse486_pa3/app/src/main/res/values/styles.xml",
                     "position": {
                         "startLine": 15,
                         "startColumn": 4,
-                        "startOffset": 525,
+                        "startOffset": 510,
                         "endLine": 17,
                         "endColumn": 12,
-                        "endOffset": 682
+                        "endOffset": 665
                     }
                 }
             }
