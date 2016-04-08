@@ -1,6 +1,5 @@
 package edu.buffalo.cse.cse486586.simpledht;
 
-import android.os.AsyncTask;
 import android.util.Log;
 
 import java.io.BufferedReader;
@@ -12,16 +11,22 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 
-public class ClientTask extends AsyncTask<Client_param_wrapper, Void, Void> {
+public class ClientTask extends Thread {
 
     static final String TAG = SimpleDhtProvider.class.getSimpleName();
 
+    Message message;
+    String destination_port;
+
+    public ClientTask(Message message, String destination_port) {
+        this.message = message;
+        this.destination_port = destination_port;
+    }
+
     @Override
-    protected Void doInBackground(Client_param_wrapper... params) {
+    public void run() {
 
         Log.d(TAG, "CLIENT_TASK: client task was launched");
-        Message message = params[0].message;
-        String destination_port = params[0].port;
 
         Socket client_socket;
         try {
@@ -59,12 +64,6 @@ public class ClientTask extends AsyncTask<Client_param_wrapper, Void, Void> {
             Log.e(TAG, "io exception connecting client socket: " + e.getMessage());
         }
 
-        return null;
-
     }
 
-    @Override
-    protected void onProgressUpdate(Void... values) {
-        super.onProgressUpdate(values);
-    }
 }

@@ -10,17 +10,27 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class ServerTask extends AsyncTask<Server_param_wrapper, String, Void> {
+
+public class ServerTask extends Thread {
 
     static final String TAG = SimpleDhtProvider.class.getSimpleName();
 
+
+    SimpleDhtProvider provider;
+
+    public ServerTask(SimpleDhtProvider provider) {
+        this.provider = provider;
+    }
+
     @Override
-    protected Void doInBackground(Server_param_wrapper... params) {
-        ServerSocket serverSocket = params[0].serverSocket;
-        SimpleDhtProvider provider_reference = params[0].simpleDhtProvider;
+    public void run() {
+
 
         // start main server loop
         try {
+            ServerSocket serverSocket = new ServerSocket(SimpleDhtProvider.SERVER_PORT);
+            serverSocket.setReuseAddress(true);
+
             while (true) {
                 Log.d(TAG, "SERVER_TASK: awaiting connection");
                 Socket clientSocket = serverSocket.accept();
@@ -36,24 +46,17 @@ public class ServerTask extends AsyncTask<Server_param_wrapper, String, Void> {
                     out.println("ACK");
                     Log.d(TAG, "ACK'ed back to client");
 
-                    provider_reference.handlers.route_incoming_message(incoming_message);
+                    provider.handlers.route_incoming_message(incoming_message);
 
                 }
 
             }
         } catch (NullPointerException err) {
-            Log.e(TAG, err.getMessage());
+            Log.e(TAG, "SERVER_TASK: null pointer exception");
         } catch (IOException err) {
             Log.e(TAG, err.getMessage());
         }
 
-        return null;
-    }
 
-    protected void onProgressUpdate(String...strings) {
-        //String msg = strings[0];
-        //Message incoming_message = new Message(msg);
-        //Log.d(TAG, "SERVER_TASK: received message: " + incoming_message.stringify());
-        //Provider_handlers.route_incoming_message(incoming_message);
     }
 }

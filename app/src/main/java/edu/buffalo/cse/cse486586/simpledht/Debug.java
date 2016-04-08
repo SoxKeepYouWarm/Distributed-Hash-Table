@@ -42,25 +42,21 @@ public class Debug {
 
         @Override
         protected Void doInBackground(Void... params) {
-            Log.d(TAG, "TASK: about to call debug_node_pointers");
             String result = get_node_pointers();
-            Log.d(TAG, "TASK: just called debug_node_pointers");
-            publishProgress("TASK: just called debug_node_pointers");
             publishProgress(result);
-            Log.d(TAG, "should have gotten progress report by now");
 
             return null;
         }
 
         @Override
         protected void onProgressUpdate(String... values) {
-            Log.d(TAG, "DEBUG: appending to textView");
-            output.append(values[0]);
-            output.append("DONE!");
+            String[] message = values[0].split("&");
+            for (int i = (message.length - 1); i >= 0; i--) {
+                output.append(message[i] + '\n');
+            }
+            output.append("DONE!\n");
         }
     }
-
-
 
 
     private String get_node_pointers() {
@@ -76,7 +72,7 @@ public class Debug {
         for (int i = 0; i < resultCursor.getCount(); i++) {
             String returnKey = resultCursor.getString(keyIndex);
             String returnValue = resultCursor.getString(valueIndex);
-            String msg = "[ " + returnKey + " ] [ " + returnValue + " ] ";
+            String msg = "[ " + returnKey + " ] [ " + returnValue + " ]&";
             output += msg;
             Log.d(TAG, "DEBUG_NODE_POINTERS: entry: " + msg);
             resultCursor.moveToNext();

@@ -27,7 +27,7 @@ public class Util {
 
 
     public int find_relationship(String sender_id) {
-
+        Log.d(TAG, "FIND_RELATIONSHIP: starting");
         if (sender_id.equals(provider.MY_NODE_ID)) {
             return IS_MY_NODE;
         }
@@ -43,7 +43,7 @@ public class Util {
 
         if (Provider_handlers.NODE_POSITION == Provider_handlers.ONLY_NODE) {
 
-            Log.e(TAG, "FIND_RELATIONSHIP: called when only node");
+            Log.d(TAG, "FIND_RELATIONSHIP: called when only node");
             return -1;
 
 

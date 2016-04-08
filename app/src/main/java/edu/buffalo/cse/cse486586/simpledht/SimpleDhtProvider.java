@@ -1,7 +1,5 @@
 package edu.buffalo.cse.cse486586.simpledht;
 
-import java.io.IOException;
-import java.net.ServerSocket;
 import java.security.NoSuchAlgorithmException;
 import java.util.Hashtable;
 import java.util.concurrent.CountDownLatch;
@@ -13,14 +11,13 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
 public class SimpleDhtProvider extends ContentProvider {
     static final String TAG = SimpleDhtProvider.class.getSimpleName();
     //private ServerSocket serverSocket;
-    private static int SERVER_PORT = 10000;
+    public static int SERVER_PORT = 10000;
 
     public static String MASTER_NODE_PORT = "11108";
 
@@ -62,17 +59,7 @@ public class SimpleDhtProvider extends ContentProvider {
     }
 
     private void start_server_task() {
-        try {
-
-            Log.d(TAG, "initiating server task");
-            ServerSocket serverSocket = new ServerSocket(SERVER_PORT);
-            serverSocket.setReuseAddress(true);
-            Server_param_wrapper params = new Server_param_wrapper(serverSocket, this);
-            new ServerTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, params);
-        } catch (IOException e) {
-
-            Log.e(TAG, "Can't create a ServerSocket");
-        }
+        new ServerTask(this).start();
     }
 
     @Override
@@ -81,6 +68,7 @@ public class SimpleDhtProvider extends ContentProvider {
         set_my_node_id();
         start_server_task();
 
+        this.util = new Util(this);
         this.handlers = new Provider_handlers(this);
 
         Log.d(TAG, "PORT: " + MY_PORT + " ID: " + MY_NODE_ID);
@@ -167,7 +155,7 @@ public class SimpleDhtProvider extends ContentProvider {
 
         try {
             Log.d(TAG, "QUERY: waiting for query result");
-            query_latch.await(50000L, TimeUnit.SECONDS);
+            query_latch.await(3L, TimeUnit.SECONDS);
         } catch (InterruptedException err) {
             Log.e(TAG, "QUERY: query latch timed out");
             String[] columns= {"key", "value"};
