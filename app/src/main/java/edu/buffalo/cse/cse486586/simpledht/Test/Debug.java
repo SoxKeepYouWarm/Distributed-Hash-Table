@@ -1,10 +1,14 @@
-package edu.buffalo.cse.cse486586.simpledht;
+package edu.buffalo.cse.cse486586.simpledht.Test;
 
 import android.content.ContentResolver;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.widget.TextView;
 
+import junit.framework.Test;
+
+import edu.buffalo.cse.cse486586.simpledht.SimpleDhtProvider;
+import edu.buffalo.cse.cse486586.simpledht.Test.Test_insert;
 import edu.buffalo.cse.cse486586.simpledht.Test.Test_node_pointers;
 import edu.buffalo.cse.cse486586.simpledht.Test.Testable;
 
@@ -29,6 +33,11 @@ public class Debug {
     public void debug_node_pointers() {
         Testable node_pointer_test = new Test_node_pointers(resolver);
         new Task().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, node_pointer_test);
+    }
+
+    public void debug_insert() {
+        Testable insert_test = new Test_insert(resolver, false);
+        new Task().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, insert_test);
     }
 
 

@@ -31,21 +31,30 @@ public class Message {
     /* ARGUMENTS */
     public static String PREDECESSOR = "predecessor";
     public static String SUCCESSOR = "successor";
-    public static String SELECTION = "selection";
+
+    public static String QUERY_SELECTION = "query_selection";
+    public static String INSERT_KEY = "insert_key";
+    public static String INSERT_VALUE = "insert_value";
+    public static String DELETE_KEY = "delete_key";
+
     public static String KEY = "key";
     public static String VALUE = "value";
+    public static String QUERY_NOT_FOUND = new String(Character.toChars(203));
     /* ARGUMENTS */
 
-    public static String DEBUG_NODE_POINTERS = new String(Character.toChars(203));
+    public static String DEBUG_NODE_POINTERS = new String(Character.toChars(199));
     public static String DEBUG_NODE_POINTERS_RESPONSE = "debug_node_pointers_response";
 
     private static String SECTION_BREAKPOINT = new String(Character.toChars(200));
     private static String KEY_VAL_BREAKPOINT = new String(Character.toChars(201));
     private static String PAIR_BREAKPOINT = new String(Character.toChars(202));
+    private static String NULL_BUFFER = new String(Character.toChars(204));
+
 
     private String command;
     private String sender_port;
     private HashMap<String, String> data = new HashMap<String, String>();
+    private HashMap<String, String> messages = new HashMap<String, String>();
 
     public Message(String command, String sender_port) {
         this.command = command;
@@ -61,7 +70,9 @@ public class Message {
         this.command = command;
         this.sender_port = sender_port;
 
-        if (message_components.length == 3) {
+        if (message_components[2].equals(NULL_BUFFER)) {
+            // args table is empty
+        } else {
             String data_string = message_components[2];
 
             String[] pairs = data_string.split(PAIR_BREAKPOINT);
@@ -72,10 +83,40 @@ public class Message {
             }
         }
 
+
+        if (message_components[3].equals(NULL_BUFFER)) {
+            // message table is empty
+        } else {
+            String data_string = message_components[3];
+
+            String[] pairs = data_string.split(PAIR_BREAKPOINT);
+
+            for (String pair: pairs) {
+                String[] key_val = pair.split(KEY_VAL_BREAKPOINT);
+                messages.put(key_val[0], key_val[1]);
+            }
+        }
+
     }
 
-    public void insert_args(String key, String val) {
+    public void insert_arg(String key, String val) {
         data.put(key, val);
+    }
+
+    public String get_arg(String key) {
+        return this.data.get(key);
+    }
+
+    public void insert_message(String key, String value) {
+        messages.put(key, value);
+    }
+
+    public String get_message(String key) {
+        return this.messages.get(key);
+    }
+
+    public HashMap<String, String> get_messages() {
+        return this.messages;
     }
 
     public void set_args(Hashtable<String, String> data) {
@@ -86,9 +127,24 @@ public class Message {
         String stringified = command + SECTION_BREAKPOINT;
         stringified += sender_port + SECTION_BREAKPOINT;
 
-        for (Map.Entry<String, String> entry: data.entrySet()) {
-            stringified += entry.getKey() + KEY_VAL_BREAKPOINT + entry.getValue() + PAIR_BREAKPOINT;
+        if (data.isEmpty()) {
+            stringified += NULL_BUFFER;
+        } else {
+            for (Map.Entry<String, String> entry: data.entrySet()) {
+                stringified += entry.getKey() + KEY_VAL_BREAKPOINT + entry.getValue() + PAIR_BREAKPOINT;
 
+            }
+        }
+
+        stringified += SECTION_BREAKPOINT;
+
+        if (messages.isEmpty()) {
+            stringified += NULL_BUFFER;
+        } else {
+            for (Map.Entry<String, String> entry: messages.entrySet()) {
+                stringified += entry.getKey() + KEY_VAL_BREAKPOINT + entry.getValue() + PAIR_BREAKPOINT;
+
+            }
         }
 
         stringified += SECTION_BREAKPOINT;
@@ -114,10 +170,6 @@ public class Message {
 
     public HashMap<String, String> get_args() {
         return this.data;
-    }
-
-    public String get_arg(String key) {
-        return this.data.get(key);
     }
 
 }

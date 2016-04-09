@@ -129,7 +129,7 @@ public class SimpleDhtProvider extends ContentProvider implements Connection_man
         else command = Message.DELETE;
 
         Message delete_message = new Message(command, connection_state.MY_PORT);
-        delete_message.insert_args(Message.SELECTION, selection);
+        delete_message.insert_arg(Message.DELETE_KEY, selection);
 
         handlers.route_incoming_message(delete_message);
 
@@ -148,8 +148,8 @@ public class SimpleDhtProvider extends ContentProvider implements Connection_man
                 " value: " + values.getAsString("value"));
 
         Message insert_message = new Message(Message.INSERT, connection_state.MY_PORT);
-        insert_message.insert_args(Message.KEY, values.getAsString(Message.KEY));
-        insert_message.insert_args(Message.VALUE, values.getAsString(Message.VALUE));
+        insert_message.insert_arg(Message.INSERT_KEY, values.getAsString(Message.KEY));
+        insert_message.insert_arg(Message.INSERT_VALUE, values.getAsString(Message.VALUE));
 
         handlers.route_incoming_message(insert_message);
 
@@ -179,7 +179,7 @@ public class SimpleDhtProvider extends ContentProvider implements Connection_man
         else command = Message.QUERY;
 
         Message query_message = new Message(command, connection_state.MY_PORT);
-        if (command.equals(Message.QUERY)) query_message.insert_args(Message.SELECTION, selection);
+        if (command.equals(Message.QUERY)) query_message.insert_arg(Message.QUERY_SELECTION, selection);
 
         handlers.route_incoming_message(query_message);
 
@@ -187,19 +187,32 @@ public class SimpleDhtProvider extends ContentProvider implements Connection_man
             Log.d(TAG, "QUERY: waiting for query result");
             query_latch.await(3L, TimeUnit.SECONDS);
         } catch (InterruptedException err) {
-            Log.e(TAG, "QUERY: query latch timed out");
+            Log.e(TAG, "QUERY: interrupted exception");
             String[] columns= {"key", "value"};
-            MatrixCursor result= new MatrixCursor(columns);
-            return result;
+            return new MatrixCursor(columns);
         }
+
         Log.d(TAG, "QUERY: latch has been raised");
+
+        if (query_result == null) {
+            Log.e(TAG, "QUERY: result object is null :(");
+            String[] columns= {"key", "value"};
+            return new MatrixCursor(columns);
+        }
+
         Log.d(TAG, "QUERY: result_message: " + query_result.stringify());
 
         String[] columns= {"key", "value"};
         MatrixCursor result= new MatrixCursor(columns);
 
         for (String key: query_result.get_args().keySet()) {
-            String[] entry = { key, query_result.get_args().get(key) };
+            String value = query_result.get_args().get(key);
+            if (value.equals(Message.QUERY_NOT_FOUND)) {
+                Log.e(TAG, "QUERY: " + key + " thread was interrupted");
+                value = "not found";
+            }
+
+            String[] entry = { key, value };
             result.addRow(entry);
         }
 

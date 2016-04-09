@@ -30,8 +30,17 @@
         android:id="@+id/debug_pointers"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/button3"
+        android:layout_below="@id/button1"
+        android:layout_alignParentLeft="true"
         android:text="debug pointers" />
+
+    <Button
+        android:id="@+id/debug_insert"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/button1"
+        android:layout_toRightOf="@id/debug_pointers"
+        android:text="debug insert" />
 
     <TextView
         android:id="@+id/textView1"
@@ -39,7 +48,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/button1"
+        android:layout_below="@+id/debug_pointers"
         android:fadeScrollbars="true"
         android:gravity="bottom"
         android:maxLines="17"

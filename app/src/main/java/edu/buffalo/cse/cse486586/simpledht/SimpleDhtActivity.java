@@ -7,6 +7,8 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.TextView;
 
+import edu.buffalo.cse.cse486586.simpledht.Test.Debug;
+
 public class SimpleDhtActivity extends Activity {
 
     @Override
@@ -25,6 +27,13 @@ public class SimpleDhtActivity extends Activity {
             @Override
             public void onClick(View v) {
                 debugger.debug_node_pointers();
+            }
+        });
+
+        findViewById(R.id.debug_insert).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                debugger.debug_insert();
             }
         });
     }
