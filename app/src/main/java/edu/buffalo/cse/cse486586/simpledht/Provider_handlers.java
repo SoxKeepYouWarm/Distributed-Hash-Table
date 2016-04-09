@@ -2,9 +2,8 @@ package edu.buffalo.cse.cse486586.simpledht;
 
 import android.util.Log;
 import java.security.NoSuchAlgorithmException;
-import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.Map;
+
 
 public class Provider_handlers {
 
@@ -287,11 +286,12 @@ public class Provider_handlers {
 
                 if (value == null) {
                     message.insert_message(key, Message.QUERY_NOT_FOUND);
+                    Log.d(TAG, "HANDLE_QUERY: not found: " + message.stringify());
                 } else {
                     message.insert_message(key, value);
+                    Log.d(TAG, "HANDLE_QUERY: found: " + message.stringify());
                 }
 
-                Log.d(TAG, "HANDLE_QUERY: found locally: " + message.stringify());
                 message.setCommand(Message.QUERY_RESPONSE);
                 send_message(message, message.getSender_port());
                 break;
@@ -303,11 +303,12 @@ public class Provider_handlers {
 
                     if (value == null) {
                         message.insert_message(key, Message.QUERY_NOT_FOUND);
+                        Log.d(TAG, "HANDLE_QUERY: not found: " + message.stringify());
                     } else {
                         message.insert_message(key, value);
+                        Log.d(TAG, "HANDLE_QUERY: found: " + message.stringify());
                     }
 
-                    Log.d(TAG, "HANDLE_QUERY: found locally: " + message.stringify());
                     message.setCommand(Message.QUERY_RESPONSE);
                     send_message(message, message.getSender_port());
 
@@ -325,11 +326,12 @@ public class Provider_handlers {
 
                     if (value == null) {
                         message.insert_message(key, Message.QUERY_NOT_FOUND);
+                        Log.d(TAG, "HANDLE_QUERY: not found: " + message.stringify());
                     } else {
                         message.insert_message(key, value);
+                        Log.d(TAG, "HANDLE_QUERY: found: " + message.stringify());
                     }
 
-                    Log.d(TAG, "HANDLE_QUERY: found locally: " + message.stringify());
                     message.setCommand(Message.QUERY_RESPONSE);
                     send_message(message, message.getSender_port());
 

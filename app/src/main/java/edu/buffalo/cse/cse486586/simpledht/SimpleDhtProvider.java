@@ -205,10 +205,10 @@ public class SimpleDhtProvider extends ContentProvider implements Connection_man
         String[] columns= {"key", "value"};
         MatrixCursor result= new MatrixCursor(columns);
 
-        for (String key: query_result.get_args().keySet()) {
-            String value = query_result.get_args().get(key);
+        for (String key: query_result.get_messages().keySet()) {
+            String value = query_result.get_message(key);
             if (value.equals(Message.QUERY_NOT_FOUND)) {
-                Log.e(TAG, "QUERY: " + key + " thread was interrupted");
+                Log.e(TAG, "QUERY: " + key + " was not found");
                 value = "not found";
             }
 

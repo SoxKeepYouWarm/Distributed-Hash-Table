@@ -63,7 +63,7 @@ public class Test_insert implements Testable{
     private void test_insert_single() {
         resolver.insert(uri, single_input);
 
-        Cursor resultCursor = resolver.query(uri, null, Message.QUERY, null, null);
+        Cursor resultCursor = resolver.query(uri, null, "key0", null, null);
         Log.d(TAG, "DEBUG_INSERT: just received query cursor");
 
         int keyIndex = resultCursor.getColumnIndex(KEY_FIELD);
