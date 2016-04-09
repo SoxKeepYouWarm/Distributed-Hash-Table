@@ -16,10 +16,10 @@ public class ServerTask extends Thread {
     static final String TAG = SimpleDhtProvider.class.getSimpleName();
 
 
-    SimpleDhtProvider provider;
+    Connection_manager connection_manager;
 
-    public ServerTask(SimpleDhtProvider provider) {
-        this.provider = provider;
+    public ServerTask(Connection_manager connection_manager) {
+        this.connection_manager = connection_manager;
     }
 
     @Override
@@ -44,9 +44,9 @@ public class ServerTask extends Thread {
                     Message incoming_message = new Message(message);
 
                     out.println("ACK");
-                    Log.d(TAG, "ACK'ed back to client");
+                    Log.d(TAG, "SERVER_TASK: ACK'ed back to client");
 
-                    provider.handlers.route_incoming_message(incoming_message);
+                    connection_manager.route_message(incoming_message);
 
                 }
 

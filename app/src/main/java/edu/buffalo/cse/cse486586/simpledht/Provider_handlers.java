@@ -2,24 +2,26 @@ package edu.buffalo.cse.cse486586.simpledht;
 
 import android.util.Log;
 import java.security.NoSuchAlgorithmException;
+import java.util.Hashtable;
 
 public class Provider_handlers {
 
     static final String TAG = SimpleDhtProvider.class.getSimpleName();
 
-    public static int ONLY_NODE = 1;
-    public static int FIRST_NODE = 2;
-    public static int LAST_NODE = 3;
-    public static int MIDDLE_NODE = 4;
+    public static final int ONLY_NODE = 1;
+    public static final int FIRST_NODE = 2;
+    public static final int LAST_NODE = 3;
+    public static final int MIDDLE_NODE = 4;
 
     public static int NODE_POSITION;
 
-    SimpleDhtProvider provider_reference;
-    Util util;
+    //SimpleDhtProvider connection_state;
+    Connection_manager connection_manager;
+    Connection_state connection_state;
 
-    public Provider_handlers(SimpleDhtProvider provider) {
-        this.provider_reference = provider;
-        this.util = provider.util;
+    public Provider_handlers(Connection_manager manager) {
+        this.connection_manager = manager;
+        this.connection_state = Connection_state.getConnectionState();
     }
 
     public void send_message(Message message, String destination_port) {
@@ -27,9 +29,6 @@ public class Provider_handlers {
     }
 
     public void handle_join_request(Message message) {
-        //if ( ! provider_reference.MY_PORT.equals(SimpleDhtProvider.MASTER_NODE_PORT) ) {
-        //    Log.e(TAG, "non master node received join request from node: " + message.getSender_port());
-        //}
         Log.d(TAG, "HANDLE_JOIN_REQUEST: sender: " + message.getSender_port());
 
         String sender_port = message.getSender_port();
@@ -42,20 +41,26 @@ public class Provider_handlers {
             sender_node_id = "";
         }
 
-        int relationship = util.find_relationship(sender_node_id);
+        int relationship = Util.find_relationship(sender_node_id);
+
+        if (relationship == Util.IS_MY_NODE
+                || relationship == Util.IS_SUCCESSOR_NODE
+                || relationship == Util.IS_PREDECESSOR_NODE) {
+            Log.e(TAG, "HANDLE_JOIN_REQUEST: invalid case");
+        }
 
         if (NODE_POSITION == ONLY_NODE) {
             Log.d(TAG, "HANDLE_JOIN_REQUEST: handling as only_node");
             // add pointers to sender in my node
-            provider_reference.SUCCESSOR_PORT = sender_port;
-            provider_reference.SUCCESSOR_NODE_ID = sender_node_id;
-            provider_reference.PREDECESSOR_PORT = sender_port;
-            provider_reference.PREDECESSOR_NODE_ID = sender_node_id;
+            connection_state.SUCCESSOR_PORT = sender_port;
+            connection_state.SUCCESSOR_NODE_ID = sender_node_id;
+            connection_state.PREDECESSOR_PORT = sender_port;
+            connection_state.PREDECESSOR_NODE_ID = sender_node_id;
 
             // return predecessor and successor info for sender
-            Message response_message = new Message(Message.JOIN_RESPONSE, provider_reference.MY_PORT);
-            response_message.insert_args(Message.PREDECESSOR, provider_reference.MY_PORT);
-            response_message.insert_args(Message.SUCCESSOR, provider_reference.MY_PORT);
+            Message response_message = new Message(Message.JOIN_RESPONSE, connection_state.MY_PORT);
+            response_message.insert_args(Message.PREDECESSOR, connection_state.MY_PORT);
+            response_message.insert_args(Message.SUCCESSOR, connection_state.MY_PORT);
 
             send_message(response_message, sender_port);
 
@@ -66,53 +71,50 @@ public class Provider_handlers {
 
             switch (relationship) {
 
-                case Util.IS_MY_NODE:
-                case Util.IS_SUCCESSOR_NODE:
-                case Util.IS_PREDECESSOR_NODE:
                 case Util.BEFORE_PREDECESSOR_NODE:
                     Log.e(TAG, "HANDLE_JOIN_REQUEST: invalid case");
                     break;
                 case Util.AFTER_SUCCESSOR_NODE:
                     Log.d(TAG, "HANDLE_JOIN_REQUEST: forwarded join request to successor node");
-                    send_message(message, provider_reference.SUCCESSOR_PORT);
+                    send_message(message, connection_state.SUCCESSOR_PORT);
                     break;
                 case Util.BETWEEN_SUCCESSOR_NODE:
                     // return predecessor and successor info for sender
-                    response_message = new Message(Message.JOIN_RESPONSE, provider_reference.MY_PORT);
-                    response_message.insert_args(Message.PREDECESSOR, provider_reference.MY_PORT);
-                    response_message.insert_args(Message.SUCCESSOR, provider_reference.SUCCESSOR_PORT);
+                    response_message = new Message(Message.JOIN_RESPONSE, connection_state.MY_PORT);
+                    response_message.insert_args(Message.PREDECESSOR, connection_state.MY_PORT);
+                    response_message.insert_args(Message.SUCCESSOR, connection_state.SUCCESSOR_PORT);
 
                     send_message(response_message, sender_port);
 
                     // update successor node's predecessor pointer
-                    update_message = new Message(Message.UPDATE_POINTERS, provider_reference.MY_PORT);
+                    update_message = new Message(Message.UPDATE_POINTERS, connection_state.MY_PORT);
                     update_message.insert_args(Message.PREDECESSOR, sender_port);
-                    send_message(update_message, provider_reference.SUCCESSOR_PORT);
+                    send_message(update_message, connection_state.SUCCESSOR_PORT);
 
                     // update my successor value
-                    provider_reference.SUCCESSOR_PORT = sender_port;
-                    provider_reference.SUCCESSOR_NODE_ID = sender_node_id;
+                    connection_state.SUCCESSOR_PORT = sender_port;
+                    connection_state.SUCCESSOR_NODE_ID = sender_node_id;
 
-                    Log.d(TAG, "UPDATE: target: " + provider_reference.MY_PORT +
+                    Log.d(TAG, "UPDATE: target: " + connection_state.MY_PORT +
                             " predecessor: " + sender_port);
                     Log.d(TAG, "responded to join request: between_successor_node");
                     break;
                 case Util.BETWEEN_PREDECESSOR_NODE:
                     // return predecessor and successor info for sender
-                    response_message = new Message(Message.JOIN_RESPONSE, provider_reference.MY_PORT);
-                    response_message.insert_args(Message.PREDECESSOR, provider_reference.PREDECESSOR_PORT);
-                    response_message.insert_args(Message.SUCCESSOR, provider_reference.MY_PORT);
+                    response_message = new Message(Message.JOIN_RESPONSE, connection_state.MY_PORT);
+                    response_message.insert_args(Message.PREDECESSOR, connection_state.PREDECESSOR_PORT);
+                    response_message.insert_args(Message.SUCCESSOR, connection_state.MY_PORT);
 
                     send_message(response_message, sender_port);
 
                     // update predecessors node's successor pointer
-                    update_message = new Message(Message.UPDATE_POINTERS, provider_reference.MY_PORT);
+                    update_message = new Message(Message.UPDATE_POINTERS, connection_state.MY_PORT);
                     update_message.insert_args(Message.SUCCESSOR, sender_port);
-                    send_message(update_message, provider_reference.PREDECESSOR_PORT);
+                    send_message(update_message, connection_state.PREDECESSOR_PORT);
 
                     // update my predecessor value
-                    provider_reference.PREDECESSOR_PORT = sender_port;
-                    provider_reference.PREDECESSOR_NODE_ID = sender_node_id;
+                    connection_state.PREDECESSOR_PORT = sender_port;
+                    connection_state.PREDECESSOR_NODE_ID = sender_node_id;
 
                     Log.d(TAG, "sent pointer update for predecessor's node pointer to successor node");
                     break;
@@ -128,53 +130,50 @@ public class Provider_handlers {
 
             switch (relationship) {
 
-                case Util.IS_MY_NODE:
-                case Util.IS_SUCCESSOR_NODE:
-                case Util.IS_PREDECESSOR_NODE:
                 case Util.AFTER_SUCCESSOR_NODE:
                     Log.e(TAG, "HANDLE_JOIN_REQUEST: invalid case");
                     break;
                 case Util.BEFORE_PREDECESSOR_NODE:
                     Log.d(TAG, "HANDLE_JOIN_REQUEST: forwarding message to predecessor");
-                    send_message(message, provider_reference.PREDECESSOR_PORT);
+                    send_message(message, connection_state.PREDECESSOR_PORT);
                     break;
                 case Util.BETWEEN_SUCCESSOR_NODE:
                     // return predecessor and successor info for sender
                     Log.d(TAG, "HANDLE_JOIN_REQUEST: between_successor_node");
-                    response_message = new Message(Message.JOIN_RESPONSE, provider_reference.MY_PORT);
-                    response_message.insert_args(Message.PREDECESSOR, provider_reference.MY_PORT);
-                    response_message.insert_args(Message.SUCCESSOR, provider_reference.SUCCESSOR_PORT);
+                    response_message = new Message(Message.JOIN_RESPONSE, connection_state.MY_PORT);
+                    response_message.insert_args(Message.PREDECESSOR, connection_state.MY_PORT);
+                    response_message.insert_args(Message.SUCCESSOR, connection_state.SUCCESSOR_PORT);
 
                     send_message(response_message, sender_port);
 
                     // update successor node's predecessor pointer
-                    update_message = new Message(Message.UPDATE_POINTERS, provider_reference.MY_PORT);
+                    update_message = new Message(Message.UPDATE_POINTERS, connection_state.MY_PORT);
                     update_message.insert_args(Message.PREDECESSOR, sender_port);
-                    send_message(update_message, provider_reference.SUCCESSOR_PORT);
+                    send_message(update_message, connection_state.SUCCESSOR_PORT);
 
                     // update my successor value
-                    provider_reference.SUCCESSOR_PORT = sender_port;
-                    provider_reference.SUCCESSOR_NODE_ID = sender_node_id;
+                    connection_state.SUCCESSOR_PORT = sender_port;
+                    connection_state.SUCCESSOR_NODE_ID = sender_node_id;
 
                     Log.d(TAG, "sent pointer update for successor's node pointer to predecessor node");
                     break;
                 case Util.BETWEEN_PREDECESSOR_NODE:
                     // return predecessor and successor info for sender
                     Log.d(TAG, "HANDLE_JOIN_REQUEST: between_predecessor_node");
-                    response_message = new Message(Message.JOIN_RESPONSE, provider_reference.MY_PORT);
-                    response_message.insert_args(Message.PREDECESSOR, provider_reference.PREDECESSOR_PORT);
-                    response_message.insert_args(Message.SUCCESSOR, provider_reference.MY_PORT);
+                    response_message = new Message(Message.JOIN_RESPONSE, connection_state.MY_PORT);
+                    response_message.insert_args(Message.PREDECESSOR, connection_state.PREDECESSOR_PORT);
+                    response_message.insert_args(Message.SUCCESSOR, connection_state.MY_PORT);
 
                     send_message(response_message, sender_port);
 
                     // update predecessor node's successor pointer
-                    update_message = new Message(Message.UPDATE_POINTERS, provider_reference.MY_PORT);
+                    update_message = new Message(Message.UPDATE_POINTERS, connection_state.MY_PORT);
                     update_message.insert_args(Message.SUCCESSOR, sender_port);
-                    send_message(update_message, provider_reference.PREDECESSOR_PORT);
+                    send_message(update_message, connection_state.PREDECESSOR_PORT);
 
                     // update my successor value
-                    provider_reference.PREDECESSOR_PORT = sender_port;
-                    provider_reference.PREDECESSOR_NODE_ID = sender_node_id;
+                    connection_state.PREDECESSOR_PORT = sender_port;
+                    connection_state.PREDECESSOR_NODE_ID = sender_node_id;
 
                     Log.d(TAG, "sent pointer update for predecessor's node pointer to successor node");
                     break;
@@ -190,53 +189,50 @@ public class Provider_handlers {
 
             switch (relationship) {
 
-                case Util.IS_MY_NODE:
-                case Util.IS_SUCCESSOR_NODE:
-                case Util.IS_PREDECESSOR_NODE:
                 case Util.AFTER_SUCCESSOR_NODE:
-                    send_message(message, provider_reference.SUCCESSOR_PORT);
+                    send_message(message, connection_state.SUCCESSOR_PORT);
                     Log.d(TAG, "forwarded join request to successor node");
                     break;
                 case Util.BEFORE_PREDECESSOR_NODE:
-                    send_message(message, provider_reference.PREDECESSOR_PORT);
+                    send_message(message, connection_state.PREDECESSOR_PORT);
                     Log.d(TAG, "forwarded join request to predecessor node");
                     break;
                 case Util.BETWEEN_SUCCESSOR_NODE:
                     // return predecessor and successor info for sender
                     Log.d(TAG, "HANDLE_JOIN_REQUEST: between_successor_node");
-                    response_message = new Message(Message.JOIN_RESPONSE, provider_reference.MY_PORT);
-                    response_message.insert_args(Message.PREDECESSOR, provider_reference.MY_PORT);
-                    response_message.insert_args(Message.SUCCESSOR, provider_reference.SUCCESSOR_PORT);
+                    response_message = new Message(Message.JOIN_RESPONSE, connection_state.MY_PORT);
+                    response_message.insert_args(Message.PREDECESSOR, connection_state.MY_PORT);
+                    response_message.insert_args(Message.SUCCESSOR, connection_state.SUCCESSOR_PORT);
 
                     send_message(response_message, sender_port);
 
                     // update successor node's predecessor pointer
-                    update_message = new Message(Message.UPDATE_POINTERS, provider_reference.MY_PORT);
+                    update_message = new Message(Message.UPDATE_POINTERS, connection_state.MY_PORT);
                     update_message.insert_args(Message.PREDECESSOR, sender_port);
-                    send_message(update_message, provider_reference.SUCCESSOR_PORT);
+                    send_message(update_message, connection_state.SUCCESSOR_PORT);
 
                     // update my successor value
-                    provider_reference.SUCCESSOR_PORT = sender_port;
-                    provider_reference.SUCCESSOR_NODE_ID = sender_node_id;
+                    connection_state.SUCCESSOR_PORT = sender_port;
+                    connection_state.SUCCESSOR_NODE_ID = sender_node_id;
 
                     Log.d(TAG, "sent pointer update for successor's node pointer to predecessor node");
                     break;
                 case Util.BETWEEN_PREDECESSOR_NODE:
                     // return predecessor and successor info for sender
-                    response_message = new Message(Message.JOIN_RESPONSE, provider_reference.MY_PORT);
-                    response_message.insert_args(Message.PREDECESSOR, provider_reference.MY_PORT);
-                    response_message.insert_args(Message.SUCCESSOR, provider_reference.SUCCESSOR_PORT);
+                    response_message = new Message(Message.JOIN_RESPONSE, connection_state.MY_PORT);
+                    response_message.insert_args(Message.PREDECESSOR, connection_state.MY_PORT);
+                    response_message.insert_args(Message.SUCCESSOR, connection_state.SUCCESSOR_PORT);
 
                     send_message(response_message, sender_port);
 
                     // update predecessor node's successor pointer
-                    update_message = new Message(Message.UPDATE_POINTERS, provider_reference.MY_PORT);
+                    update_message = new Message(Message.UPDATE_POINTERS, connection_state.MY_PORT);
                     update_message.insert_args(Message.SUCCESSOR, sender_port);
-                    send_message(update_message, provider_reference.PREDECESSOR_PORT);
+                    send_message(update_message, connection_state.PREDECESSOR_PORT);
 
                     // update my successor value
-                    provider_reference.PREDECESSOR_PORT = sender_port;
-                    provider_reference.PREDECESSOR_NODE_ID = sender_node_id;
+                    connection_state.PREDECESSOR_PORT = sender_port;
+                    connection_state.PREDECESSOR_NODE_ID = sender_node_id;
 
                     Log.d(TAG, "sent pointer update for predecessor's node pointer to successor node");
                     break;
@@ -252,28 +248,81 @@ public class Provider_handlers {
 
     public void handle_join_response(Message message) {
         Log.d(TAG, "received join response from master node");
-        provider_reference.PREDECESSOR_PORT = message.get_arg(Message.PREDECESSOR);
-        provider_reference.SUCCESSOR_PORT = message.get_arg(Message.SUCCESSOR);
+        connection_state.PREDECESSOR_PORT = message.get_arg(Message.PREDECESSOR);
+        connection_state.SUCCESSOR_PORT = message.get_arg(Message.SUCCESSOR);
 
         try {
-            provider_reference.PREDECESSOR_NODE_ID = Util.genHash(provider_reference.PREDECESSOR_PORT);
-            provider_reference.SUCCESSOR_NODE_ID = Util.genHash(provider_reference.SUCCESSOR_PORT);
+            connection_state.PREDECESSOR_NODE_ID = Util.genHash(connection_state.PREDECESSOR_PORT);
+            connection_state.SUCCESSOR_NODE_ID = Util.genHash(connection_state.SUCCESSOR_PORT);
         } catch (NoSuchAlgorithmException err) {
             Log.e(TAG, "HANDLE_JOIN_RESPONSE: error generating hash");
         }
 
-        provider_reference.CONNECTED = true;
+        connection_state.CONNECTED = true;
 
-        Log.d(TAG, "HANDLE_JOIN_RESPONSE: connected: true predecessor_port: " + provider_reference.PREDECESSOR_PORT +
-                " successor_port: " + provider_reference.SUCCESSOR_PORT);
+        Log.d(TAG, "HANDLE_JOIN_RESPONSE: connected: true predecessor_port: " + connection_state.PREDECESSOR_PORT +
+                " successor_port: " + connection_state.SUCCESSOR_PORT);
     }
 
     public void handle_query(Message message) {
 
+        Log.d(TAG, "HANDLE_QUERY: " + message.stringify());
+
+        String message_id;
+        try {
+            message_id = Util.genHash(message.get_arg(Message.KEY));
+        } catch (NoSuchAlgorithmException err) {
+            Log.e(TAG, "HANDLE_QUERY: error generating hash");
+            return;
+        }
+
+        String key = message.get_arg(Message.KEY);
+        Message query_result_message = new Message(Message.QUERY_RESPONSE, connection_state.MY_PORT);
+        String value = connection_manager.query(key);
+
+        switch (NODE_POSITION) {
+            case ONLY_NODE:
+                if (value != null) {
+                    query_result_message.insert_args(key, value);
+                }
+                send_message(query_result_message, message.getSender_port());
+                Log.d(TAG, "HANDLE_QUERY: " + query_result_message);
+                break;
+            case FIRST_NODE:
+                if (Util.less_than(message_id, connection_state.MY_NODE_ID)
+                        || Util.greater_than(message_id, connection_state.PREDECESSOR_NODE_ID)) {
+                    if (value != null) {
+                        query_result_message.insert_args(key, value);
+                    }
+                    send_message(query_result_message, message.getSender_port());
+                    Log.d(TAG, "HANDLE_QUERY: " + query_result_message);
+                } else {
+                    send_message(message, connection_state.SUCCESSOR_PORT);
+                }
+                break;
+            case LAST_NODE:
+            case MIDDLE_NODE:
+                if (Util.less_than(message_id, connection_state.MY_NODE_ID)
+                        && Util.greater_than(message_id, connection_state.PREDECESSOR_NODE_ID)) {
+                    if (value != null) {
+                        query_result_message.insert_args(key, value);
+                    }
+                    send_message(query_result_message, message.getSender_port());
+                    Log.d(TAG, "HANDLE_QUERY: " + query_result_message);
+                } else {
+                    send_message(message, connection_state.SUCCESSOR_PORT);
+                }
+                break;
+            default:
+                Log.e(TAG, "HANDLE_INSERT: error identifying node position");
+                break;
+
+        }
+
     }
 
     public void handle_query_response(Message message) {
-
+        connection_manager.notify_query_results(message);
     }
 
     public void handle_query_all(Message message) {
@@ -285,18 +334,100 @@ public class Provider_handlers {
     }
 
     public void handle_query_local(Message message) {
+        Hashtable<String, String> data = connection_manager.get_datastore();
+        for (String key : data.keySet()) {
+            String value = data.get(key);
+            message.insert_args(key, value);
+        }
 
-    }
-
-    public void handle_query_local_response(Message message) {
+        connection_manager.notify_query_results(message);
 
     }
 
     public void handle_insert(Message message) {
 
+        Log.d(TAG, "HANDLE_INSERT: " + message.stringify());
+
+        String message_id;
+        try {
+            message_id = Util.genHash(message.get_arg(Message.KEY));
+        } catch (NoSuchAlgorithmException err) {
+            Log.e(TAG, "HANDLE_INSERT: error generating hash");
+            return;
+        }
+
+        String key = message.get_arg(Message.KEY);
+        String value = message.get_arg(Message.VALUE);
+
+        switch (NODE_POSITION) {
+            case ONLY_NODE:
+                connection_manager.insert(key, value);
+                break;
+            case FIRST_NODE:
+                if (Util.less_than(message_id, connection_state.MY_NODE_ID)
+                        || Util.greater_than(message_id, connection_state.PREDECESSOR_NODE_ID)) {
+                    connection_manager.insert(key, value);
+                } else {
+                    send_message(message, connection_state.SUCCESSOR_PORT);
+                }
+                break;
+            case LAST_NODE:
+            case MIDDLE_NODE:
+                if (Util.less_than(message_id, connection_state.MY_NODE_ID)
+                        && Util.greater_than(message_id, connection_state.PREDECESSOR_NODE_ID)) {
+                    connection_manager.insert(key, value);
+                } else {
+                    send_message(message, connection_state.SUCCESSOR_PORT);
+                }
+                break;
+            default:
+                Log.e(TAG, "HANDLE_INSERT: error identifying node position");
+                break;
+
+        }
+
     }
 
     public void handle_delete(Message message) {
+
+        Log.d(TAG, "HANDLE_DELETE: " + message.stringify());
+
+        String message_id;
+        try {
+            message_id = Util.genHash(message.get_arg(Message.KEY));
+        } catch (NoSuchAlgorithmException err) {
+            Log.e(TAG, "HANDLE_DELETE: error generating hash");
+            return;
+        }
+
+        String key = message.get_arg(Message.KEY);
+
+        switch (NODE_POSITION) {
+            case ONLY_NODE:
+                connection_manager.delete(key);
+                break;
+            case FIRST_NODE:
+                if (Util.less_than(message_id, connection_state.MY_NODE_ID)
+                        || Util.greater_than(message_id, connection_state.PREDECESSOR_NODE_ID)) {
+                    connection_manager.delete(key);
+                } else {
+                    send_message(message, connection_state.SUCCESSOR_PORT);
+                }
+                break;
+            case LAST_NODE:
+            case MIDDLE_NODE:
+                if (Util.less_than(message_id, connection_state.MY_NODE_ID)
+                        && Util.greater_than(message_id, connection_state.PREDECESSOR_NODE_ID)) {
+                    connection_manager.delete(key);
+                } else {
+                    send_message(message, connection_state.SUCCESSOR_PORT);
+                }
+                break;
+            default:
+                Log.e(TAG, "HANDLE_INSERT: error identifying node position");
+                break;
+
+        }
 
     }
 
@@ -310,21 +441,21 @@ public class Provider_handlers {
         try {
 
             if (successor != null) {
-                provider_reference.SUCCESSOR_PORT = successor;
-                provider_reference.SUCCESSOR_NODE_ID = Util.genHash(provider_reference.SUCCESSOR_PORT);
+                connection_state.SUCCESSOR_PORT = successor;
+                connection_state.SUCCESSOR_NODE_ID = Util.genHash(connection_state.SUCCESSOR_PORT);
             }
 
             if (predecessor != null) {
-                provider_reference.PREDECESSOR_PORT = predecessor;
-                provider_reference.PREDECESSOR_NODE_ID = Util.genHash(predecessor);
+                connection_state.PREDECESSOR_PORT = predecessor;
+                connection_state.PREDECESSOR_NODE_ID = Util.genHash(predecessor);
             }
 
         } catch (NoSuchAlgorithmException err) {
             Log.e(TAG, "HANDLE_UPDATE_POINTERS: gen hash error");
         }
 
-        Log.d(TAG, "HANDLE_UPDATE_POINTERS: succ: " + provider_reference.SUCCESSOR_PORT +
-                " predd: " + provider_reference.PREDECESSOR_PORT);
+        Log.d(TAG, "HANDLE_UPDATE_POINTERS: succ: " + connection_state.SUCCESSOR_PORT +
+                " predd: " + connection_state.PREDECESSOR_PORT);
 
     }
 
@@ -334,39 +465,38 @@ public class Provider_handlers {
 
     public void handle_debug_node_pointers(Message message) {
 
-        String my_info = "PREDECESSOR: " + provider_reference.PREDECESSOR_PORT +
-                " SUCCESSOR: " + provider_reference.SUCCESSOR_PORT;
-        message.insert_args(provider_reference.MY_PORT, my_info);
+        String my_info = "PREDECESSOR: " + connection_state.PREDECESSOR_PORT +
+                " SUCCESSOR: " + connection_state.SUCCESSOR_PORT;
+        message.insert_args(connection_state.MY_PORT, my_info);
 
-        if (message.getSender_port().equals(provider_reference.SUCCESSOR_PORT)) {
+        if (message.getSender_port().equals(connection_state.SUCCESSOR_PORT)) {
             // forwarding response to the original sender
             Log.d(TAG, "HANDLE_DEBUG_NODE_POINTERS: forwarding response to original sender");
             message.setCommand(Message.DEBUG_NODE_POINTERS_RESPONSE);
-            message.setSender_port(provider_reference.MY_PORT);
-            send_message(message, provider_reference.SUCCESSOR_PORT);
+            message.setSender_port(connection_state.MY_PORT);
+            send_message(message, connection_state.SUCCESSOR_PORT);
         } else {
             // forwarding to another node
             Log.d(TAG, "HANDLE_DEBUG_NODE_POINTERS: forwarding response to next node");
-            send_message(message, provider_reference.SUCCESSOR_PORT);
+            send_message(message, connection_state.SUCCESSOR_PORT);
         }
 
     }
 
     public void handle_debug_node_pointers_response(Message message) {
-        provider_reference.query_result = message;
-        provider_reference.release_query_latch();
+        connection_manager.notify_query_results(message);
     }
 
     public void determine_node_position() {
 
-        if (provider_reference.MY_NODE_ID.equals(provider_reference.SUCCESSOR_NODE_ID) &&
-                provider_reference.MY_NODE_ID.equals(provider_reference.PREDECESSOR_NODE_ID)) {
+        if (connection_state.MY_NODE_ID.equals(connection_state.SUCCESSOR_NODE_ID) &&
+                connection_state.MY_NODE_ID.equals(connection_state.PREDECESSOR_NODE_ID)) {
             NODE_POSITION = ONLY_NODE;
             Log.d(TAG, "DETERMINE_NODE_POSITION: this node is only node");
-        } else if (Util.less_than(provider_reference.MY_NODE_ID, provider_reference.PREDECESSOR_NODE_ID)) {
+        } else if (Util.less_than(connection_state.MY_NODE_ID, connection_state.PREDECESSOR_NODE_ID)) {
             NODE_POSITION = FIRST_NODE;
             Log.d(TAG, "DETERMINE_NODE_POSITION: this node is first node");
-        } else if (Util.greater_than(provider_reference.MY_NODE_ID, provider_reference.SUCCESSOR_NODE_ID)) {
+        } else if (Util.greater_than(connection_state.MY_NODE_ID, connection_state.SUCCESSOR_NODE_ID)) {
             NODE_POSITION = LAST_NODE;
             Log.d(TAG, "DETERMINE_NODE_POSITION: this node is last node");
         } else {
@@ -377,14 +507,13 @@ public class Provider_handlers {
     }
 
     public void route_incoming_message(Message message) {
-        if (provider_reference.CONNECTED) determine_node_position();
+        if (connection_state.CONNECTED) determine_node_position();
 
         if (message.getCommand().equals(Message.QUERY)) handle_query(message);
         else if (message.getCommand().equals(Message.QUERY_RESPONSE)) handle_query_response(message);
         else if (message.getCommand().equals(Message.QUERY_ALL)) handle_query_all(message);
         else if (message.getCommand().equals(Message.QUERY_ALL_RESPONSE)) handle_query_all_response(message);
         else if (message.getCommand().equals(Message.QUERY_LOCAL)) handle_query_local(message);
-        else if (message.getCommand().equals(Message.QUERY_LOCAL_RESPONSE)) handle_query_local_response(message);
 
         else if (message.getCommand().equals(Message.INSERT)) handle_insert(message);
         else if (message.getCommand().equals(Message.DELETE)) handle_delete(message);
@@ -400,6 +529,5 @@ public class Provider_handlers {
 
         else Log.e(TAG, "ROUTE_INCOMING_MESSAGE: message was not routed correctly");
     }
-
 
 }

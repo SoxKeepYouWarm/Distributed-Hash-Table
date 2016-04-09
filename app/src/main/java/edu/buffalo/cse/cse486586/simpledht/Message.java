@@ -29,6 +29,8 @@ public class Message {
     public static String PREDECESSOR = "predecessor";
     public static String SUCCESSOR = "successor";
     public static String SELECTION = "selection";
+    public static String KEY = "key";
+    public static String VALUE = "value";
     /* ARGUMENTS */
 
     public static String DEBUG_NODE_POINTERS = new String(Character.toChars(203));

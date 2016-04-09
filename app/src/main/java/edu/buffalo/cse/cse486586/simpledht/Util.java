@@ -18,25 +18,24 @@ public class Util {
     public static final int AFTER_SUCCESSOR_NODE = 6;
     public static final int BEFORE_PREDECESSOR_NODE = 7;
 
+    private static Connection_state connection_state;
 
-    SimpleDhtProvider provider;
+    public static int find_relationship(String sender_id) {
 
-    public Util(SimpleDhtProvider provider) {
-        this.provider = provider;
-    }
+        if (connection_state == null) {
+            connection_state = Connection_state.getConnectionState();
+        }
 
-
-    public int find_relationship(String sender_id) {
         Log.d(TAG, "FIND_RELATIONSHIP: starting");
-        if (sender_id.equals(provider.MY_NODE_ID)) {
+        if (sender_id.equals(connection_state.MY_NODE_ID)) {
             return IS_MY_NODE;
         }
 
-        if (sender_id.equals(provider.SUCCESSOR_NODE_ID)) {
+        if (sender_id.equals(connection_state.SUCCESSOR_NODE_ID)) {
             return IS_SUCCESSOR_NODE;
         }
 
-        if (sender_id.equals(provider.PREDECESSOR_NODE_ID)) {
+        if (sender_id.equals(connection_state.PREDECESSOR_NODE_ID)) {
             return IS_PREDECESSOR_NODE;
         }
 
@@ -49,17 +48,17 @@ public class Util {
 
         } else if (Provider_handlers.NODE_POSITION == Provider_handlers.FIRST_NODE) {
 
-            if (less_than(sender_id, provider.MY_NODE_ID)
-                    || greater_than(sender_id, provider.PREDECESSOR_NODE_ID)) {
+            if (less_than(sender_id, connection_state.MY_NODE_ID)
+                    || greater_than(sender_id, connection_state.PREDECESSOR_NODE_ID)) {
                 return BETWEEN_PREDECESSOR_NODE;
             }
 
-            if (greater_than(sender_id, provider.MY_NODE_ID)
-                    && less_than(sender_id, provider.SUCCESSOR_NODE_ID)) {
+            if (greater_than(sender_id, connection_state.MY_NODE_ID)
+                    && less_than(sender_id, connection_state.SUCCESSOR_NODE_ID)) {
                 return BETWEEN_SUCCESSOR_NODE;
             }
 
-            if (greater_than(sender_id, provider.SUCCESSOR_NODE_ID)) {
+            if (greater_than(sender_id, connection_state.SUCCESSOR_NODE_ID)) {
                 return AFTER_SUCCESSOR_NODE;
             }
 
@@ -68,17 +67,17 @@ public class Util {
 
         } else if (Provider_handlers.NODE_POSITION == Provider_handlers.LAST_NODE) {
 
-            if (greater_than(sender_id, provider.MY_NODE_ID)
-                    || less_than(sender_id, provider.SUCCESSOR_NODE_ID)) {
+            if (greater_than(sender_id, connection_state.MY_NODE_ID)
+                    || less_than(sender_id, connection_state.SUCCESSOR_NODE_ID)) {
                 return BETWEEN_SUCCESSOR_NODE;
             }
 
-            if (less_than(sender_id, provider.MY_NODE_ID)
-                    && greater_than(sender_id, provider.PREDECESSOR_NODE_ID)) {
+            if (less_than(sender_id, connection_state.MY_NODE_ID)
+                    && greater_than(sender_id, connection_state.PREDECESSOR_NODE_ID)) {
                 return BETWEEN_PREDECESSOR_NODE;
             }
 
-            if (less_than(sender_id, provider.PREDECESSOR_NODE_ID)) {
+            if (less_than(sender_id, connection_state.PREDECESSOR_NODE_ID)) {
                 return BEFORE_PREDECESSOR_NODE;
             }
 
@@ -87,23 +86,23 @@ public class Util {
 
         } else if (Provider_handlers.NODE_POSITION == Provider_handlers.MIDDLE_NODE) {
 
-            if (greater_than(sender_id, provider.MY_NODE_ID)
-                    && greater_than(sender_id, provider.SUCCESSOR_NODE_ID)) {
+            if (greater_than(sender_id, connection_state.MY_NODE_ID)
+                    && greater_than(sender_id, connection_state.SUCCESSOR_NODE_ID)) {
                 return AFTER_SUCCESSOR_NODE;
             }
 
-            if (greater_than(sender_id, provider.MY_NODE_ID)
-                    && less_than(sender_id, provider.SUCCESSOR_NODE_ID)) {
+            if (greater_than(sender_id, connection_state.MY_NODE_ID)
+                    && less_than(sender_id, connection_state.SUCCESSOR_NODE_ID)) {
                 return BETWEEN_SUCCESSOR_NODE;
             }
 
-            if (less_than(sender_id, provider.MY_NODE_ID)
-                    && less_than(sender_id, provider.SUCCESSOR_NODE_ID)) {
+            if (less_than(sender_id, connection_state.MY_NODE_ID)
+                    && less_than(sender_id, connection_state.SUCCESSOR_NODE_ID)) {
                 return BEFORE_PREDECESSOR_NODE;
             }
 
-            if (less_than(sender_id, provider.MY_NODE_ID)
-                    && greater_than(sender_id, provider.PREDECESSOR_NODE_ID)) {
+            if (less_than(sender_id, connection_state.MY_NODE_ID)
+                    && greater_than(sender_id, connection_state.PREDECESSOR_NODE_ID)) {
                 return BEFORE_PREDECESSOR_NODE;
             }
 

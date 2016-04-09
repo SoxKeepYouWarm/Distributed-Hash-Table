@@ -2,6 +2,8 @@ package edu.buffalo.cse.cse486586.simpledht;
 
 public class Connection_state {
 
+    private static Connection_state state;
+
     public String MY_PORT;
     public String MY_NODE_ID;
 
@@ -13,8 +15,23 @@ public class Connection_state {
 
     public boolean CONNECTED = false;
 
-    public Connection_state() {
+    private Connection_state() {
+        MY_PORT = "";
+        MY_NODE_ID = "";
+        PREDECESSOR_PORT = "";
+        PREDECESSOR_NODE_ID = "";
+        SUCCESSOR_PORT = "";
+        SUCCESSOR_NODE_ID = "";
         CONNECTED = false;
+    }
+
+    public static Connection_state getConnectionState() {
+        if (state == null) {
+            state = new Connection_state();
+            return state;
+        } else {
+            return state;
+        }
     }
 
 }
