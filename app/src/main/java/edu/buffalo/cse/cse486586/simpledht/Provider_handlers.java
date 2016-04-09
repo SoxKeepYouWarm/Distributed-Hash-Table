@@ -270,13 +270,13 @@ public class Provider_handlers {
 
         String message_id;
         try {
-            message_id = Util.genHash(message.get_arg(Message.KEY));
+            message_id = Util.genHash(message.get_arg(Message.SELECTION));
         } catch (NoSuchAlgorithmException err) {
             Log.e(TAG, "HANDLE_QUERY: error generating hash");
             return;
         }
 
-        String key = message.get_arg(Message.KEY);
+        String key = message.get_arg(Message.SELECTION);
         Message query_result_message = new Message(Message.QUERY_RESPONSE, connection_state.MY_PORT);
         String value = connection_manager.query(key);
 
@@ -327,10 +327,25 @@ public class Provider_handlers {
 
     public void handle_query_all(Message message) {
 
+        // insert all local data first
+        Hashtable<String, String> data = connection_manager.get_datastore();
+        for (String key : data.keySet()) {
+            String value = data.get(key);
+            message.insert_args(key, value);
+        }
+
+        // if next node is the original sender, send as response
+        if (message.getSender_port().equals(connection_state.SUCCESSOR_PORT)) {
+            message.setCommand(Message.QUERY_ALL_RESPONSE);
+            send_message(message, message.getSender_port());
+        } else {
+            send_message(message, connection_state.SUCCESSOR_PORT);
+        }
+
     }
 
     public void handle_query_all_response(Message message) {
-
+        connection_manager.notify_query_results(message);
     }
 
     public void handle_query_local(Message message) {
@@ -361,13 +376,16 @@ public class Provider_handlers {
 
         switch (NODE_POSITION) {
             case ONLY_NODE:
+                Log.d(TAG, "HANDLE_INSERT: inserting pair locally");
                 connection_manager.insert(key, value);
                 break;
             case FIRST_NODE:
                 if (Util.less_than(message_id, connection_state.MY_NODE_ID)
                         || Util.greater_than(message_id, connection_state.PREDECESSOR_NODE_ID)) {
+                    Log.d(TAG, "HANDLE_INSERT: inserting pair locally");
                     connection_manager.insert(key, value);
                 } else {
+                    Log.d(TAG, "HANDLE_INSERT: forwarding message to next node");
                     send_message(message, connection_state.SUCCESSOR_PORT);
                 }
                 break;
@@ -375,8 +393,10 @@ public class Provider_handlers {
             case MIDDLE_NODE:
                 if (Util.less_than(message_id, connection_state.MY_NODE_ID)
                         && Util.greater_than(message_id, connection_state.PREDECESSOR_NODE_ID)) {
+                    Log.d(TAG, "HANDLE_INSERT: inserting pair locally");
                     connection_manager.insert(key, value);
                 } else {
+                    Log.d(TAG, "HANDLE_INSERT: forwarding message to next node");
                     send_message(message, connection_state.SUCCESSOR_PORT);
                 }
                 break;
@@ -394,13 +414,13 @@ public class Provider_handlers {
 
         String message_id;
         try {
-            message_id = Util.genHash(message.get_arg(Message.KEY));
+            message_id = Util.genHash(message.get_arg(Message.SELECTION));
         } catch (NoSuchAlgorithmException err) {
             Log.e(TAG, "HANDLE_DELETE: error generating hash");
             return;
         }
 
-        String key = message.get_arg(Message.KEY);
+        String key = message.get_arg(Message.SELECTION);
 
         switch (NODE_POSITION) {
             case ONLY_NODE:
@@ -428,6 +448,28 @@ public class Provider_handlers {
                 break;
 
         }
+
+    }
+
+    public void handle_delete_all(Message message) {
+
+        Log.d(TAG, "HANDLE_DELETE_ALL: " + message.stringify());
+        Hashtable<String, String> datastore = connection_manager.get_datastore();
+        datastore.clear();
+
+        // if next node isn't original sender
+        if ( ! message.getSender_port().equals(connection_state.SUCCESSOR_PORT) ) {
+            // forward message to next node
+            send_message(message, connection_state.SUCCESSOR_PORT);
+        }
+
+    }
+
+    public void handle_delete_local(Message message) {
+
+        Log.d(TAG, "HANDLE_DELETE_ALL: " + message.stringify());
+        Hashtable<String, String> datastore = connection_manager.get_datastore();
+        datastore.clear();
 
     }
 
@@ -516,7 +558,10 @@ public class Provider_handlers {
         else if (message.getCommand().equals(Message.QUERY_LOCAL)) handle_query_local(message);
 
         else if (message.getCommand().equals(Message.INSERT)) handle_insert(message);
+
         else if (message.getCommand().equals(Message.DELETE)) handle_delete(message);
+        else if (message.getCommand().equals(Message.DELETE_ALL)) handle_delete_all(message);
+        else if (message.getCommand().equals(Message.DELETE_LOCAL)) handle_delete_local(message);
 
         else if (message.getCommand().equals(Message.JOIN)) handle_join_request(message);
         else if (message.getCommand().equals(Message.JOIN_RESPONSE)) handle_join_response(message);

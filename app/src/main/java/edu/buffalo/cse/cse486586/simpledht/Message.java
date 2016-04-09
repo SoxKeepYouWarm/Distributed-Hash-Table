@@ -11,7 +11,11 @@ public class Message {
     public static String JOIN_RESPONSE = "join_response";
 
     public static String INSERT = "insert";
+
     public static String DELETE = "delete";
+    public static String DELETE_LOCAL = "delete_local";
+    public static String DELETE_ALL = "delete_all";
+
     public static String UPDATE_POINTERS = "update_pointers";
     public static String UPDATE_KEYS = "update_keys";
 
@@ -22,7 +26,6 @@ public class Message {
     public static String QUERY_ALL_RESPONSE = "query_all_response";
 
     public static String QUERY_LOCAL = "query_local";
-    public static String QUERY_LOCAL_RESPONSE = "query_local_response";
     /* COMMANDS */
 
     /* ARGUMENTS */

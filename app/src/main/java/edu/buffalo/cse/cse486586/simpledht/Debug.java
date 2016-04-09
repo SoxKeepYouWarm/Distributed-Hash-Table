@@ -1,12 +1,12 @@
 package edu.buffalo.cse.cse486586.simpledht;
 
 import android.content.ContentResolver;
-import android.content.Loader;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.widget.TextView;
+
+import edu.buffalo.cse.cse486586.simpledht.Test.Test_node_pointers;
+import edu.buffalo.cse.cse486586.simpledht.Test.Testable;
 
 public class Debug {
 
@@ -25,62 +25,41 @@ public class Debug {
         this.output = textView;
     }
 
-    private Uri buildUri(String scheme, String authority) {
-        Uri.Builder uriBuilder = new Uri.Builder();
-        uriBuilder.authority(authority);
-        uriBuilder.scheme(scheme);
-        return uriBuilder.build();
-    }
-
 
     public void debug_node_pointers() {
-        new Task().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        Testable node_pointer_test = new Test_node_pointers(resolver);
+        new Task().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, node_pointer_test);
     }
 
 
-    private class Task extends AsyncTask<Void, String, Void> {
+    private class Task extends AsyncTask<Testable, String, Void> {
 
         @Override
-        protected Void doInBackground(Void... params) {
-            String result = get_node_pointers();
-            publishProgress(result);
+        protected Void doInBackground(Testable... params) {
+            Testable test = params[0];
+            test.run_test();
+            publishProgress(test.get_results());
 
             return null;
         }
 
         @Override
         protected void onProgressUpdate(String... values) {
-            String[] message = values[0].split("&");
-            for (int i = (message.length - 1); i >= 0; i--) {
-                output.append(message[i] + '\n');
+
+            for (String line : values) {
+                output.append(line + '\n');
             }
+
             output.append("DONE!\n");
         }
     }
 
 
-    private String get_node_pointers() {
-        Cursor resultCursor = resolver.query(uri, null, Message.DEBUG_NODE_POINTERS, null, null);
-        Log.d(TAG, "DEBUG_NODE_POINTERS: just received query cursor");
-
-        int keyIndex = resultCursor.getColumnIndex(KEY_FIELD);
-        int valueIndex = resultCursor.getColumnIndex(VALUE_FIELD);
-
-        resultCursor.moveToFirst();
-
-        String output = "";
-        for (int i = 0; i < resultCursor.getCount(); i++) {
-            String returnKey = resultCursor.getString(keyIndex);
-            String returnValue = resultCursor.getString(valueIndex);
-            String msg = "[ " + returnKey + " ] [ " + returnValue + " ]&";
-            output += msg;
-            Log.d(TAG, "DEBUG_NODE_POINTERS: entry: " + msg);
-            resultCursor.moveToNext();
-        }
-
-        Log.d(TAG, "DEBUG_NODE_POINTERS: output: " + output);
-        return output;
-
+    public static Uri buildUri(String scheme, String authority) {
+        Uri.Builder uriBuilder = new Uri.Builder();
+        uriBuilder.authority(authority);
+        uriBuilder.scheme(scheme);
+        return uriBuilder.build();
     }
 
 }

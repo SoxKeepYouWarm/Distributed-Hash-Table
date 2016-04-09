@@ -122,7 +122,13 @@ public class SimpleDhtProvider extends ContentProvider implements Connection_man
     public int delete(Uri uri, String selection, String[] selectionArgs) {
         Log.d(TAG, "delete selection is: " + selection);
 
-        Message delete_message = new Message(Message.DELETE, connection_state.MY_PORT);
+        String command;
+
+        if (selection.equals("*")) command = Message.DELETE_ALL;
+        else if (selection.equals("@")) command = Message.DELETE_LOCAL;
+        else command = Message.DELETE;
+
+        Message delete_message = new Message(command, connection_state.MY_PORT);
         delete_message.insert_args(Message.SELECTION, selection);
 
         handlers.route_incoming_message(delete_message);
@@ -142,11 +148,12 @@ public class SimpleDhtProvider extends ContentProvider implements Connection_man
                 " value: " + values.getAsString("value"));
 
         Message insert_message = new Message(Message.INSERT, connection_state.MY_PORT);
-        insert_message.insert_args(values.getAsString("key"), values.getAsString("value"));
+        insert_message.insert_args(Message.KEY, values.getAsString(Message.KEY));
+        insert_message.insert_args(Message.VALUE, values.getAsString(Message.VALUE));
 
         handlers.route_incoming_message(insert_message);
 
-        return null;
+        return uri;
     }
 
 
