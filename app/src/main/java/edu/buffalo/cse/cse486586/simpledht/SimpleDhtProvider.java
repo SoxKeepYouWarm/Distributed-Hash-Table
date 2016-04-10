@@ -26,7 +26,6 @@ public class SimpleDhtProvider extends ContentProvider implements Connection_man
     Connection_state connection_state;
 
     Hashtable<String, String> datastore = new Hashtable<String, String>();
-    Hashtable<String, String> providers = new Hashtable<String, String>();
 
     public Provider_handlers handlers;
 
@@ -73,12 +72,8 @@ public class SimpleDhtProvider extends ContentProvider implements Connection_man
     }
 
     private void set_my_node_id() {
-        try{
-            connection_state.MY_NODE_ID=Util.genHash(connection_state.MY_PORT);
-            Log.d(TAG, "node id: " + connection_state.MY_NODE_ID);
-        }catch(NoSuchAlgorithmException err){
-            Log.e(TAG, "SET_NODE_ID: error setting node id");
-        }
+        connection_state.MY_NODE_ID=Util.port_to_hash(connection_state.MY_PORT);
+        Log.d(TAG, "node id: " + connection_state.MY_NODE_ID);
     }
 
     private void start_server_task() {
@@ -98,23 +93,18 @@ public class SimpleDhtProvider extends ContentProvider implements Connection_man
 
         Log.d(TAG, "PORT: " + connection_state.MY_PORT + " ID: " + connection_state.MY_NODE_ID);
 
-        // check if this device is master node
-        if (connection_state.MY_PORT.equals(MASTER_NODE_PORT)) {
-            connection_state.PREDECESSOR_PORT = connection_state.MY_PORT;
-            connection_state.SUCCESSOR_PORT = connection_state.MY_PORT;
-            connection_state.CONNECTED = true;
-            try {
-                connection_state.PREDECESSOR_NODE_ID = Util.genHash(connection_state.MY_PORT);
-                connection_state.SUCCESSOR_NODE_ID = Util.genHash(connection_state.MY_PORT);
-            } catch (NoSuchAlgorithmException err) {
-                Log.e(TAG, "error setting predecessor node id");
-            }
+        connection_state.PREDECESSOR_PORT = connection_state.MY_PORT;
+        connection_state.SUCCESSOR_PORT = connection_state.MY_PORT;
+        connection_state.CONNECTED = true;
 
-        } else {
+        connection_state.PREDECESSOR_NODE_ID = Util.port_to_hash(connection_state.MY_PORT);
+        connection_state.SUCCESSOR_NODE_ID = Util.port_to_hash(connection_state.MY_PORT);
+
+        // check if this device is master node
+        if ( ! connection_state.MY_PORT.equals(MASTER_NODE_PORT) ) {
             // connect to master node
             Message join_request = new Message(Message.JOIN, connection_state.MY_PORT);
             handlers.send_message(join_request, MASTER_NODE_PORT);
-
         }
 
         return false;

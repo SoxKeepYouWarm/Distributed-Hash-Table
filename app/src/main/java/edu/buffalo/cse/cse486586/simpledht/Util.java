@@ -123,6 +123,16 @@ public class Util {
         return a.compareTo(b) < 0;
     }
 
+    public static String port_to_hash(String port) {
+        String hash = "";
+        try {
+            hash = genHash(Integer.toString(Integer.parseInt(port) / 2));
+        } catch (NoSuchAlgorithmException err) {
+            Log.e(TAG, "error hashing " + port);
+        }
+        return hash;
+    }
+
     public static String genHash(String input) throws NoSuchAlgorithmException {
         MessageDigest sha1 = MessageDigest.getInstance("SHA-1");
         byte[] sha1Hash = sha1.digest(input.getBytes());

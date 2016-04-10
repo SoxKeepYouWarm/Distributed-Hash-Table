@@ -36,12 +36,7 @@ public class Provider_handlers {
         String sender_port = message.getSender_port();
         String sender_node_id;
 
-        try {
-            sender_node_id = Util.genHash(sender_port);
-        } catch (NoSuchAlgorithmException err) {
-            Log.e(TAG, "HANDLE_JOIN_REQUEST: error generating port hash");
-            sender_node_id = "";
-        }
+        sender_node_id = Util.port_to_hash(sender_port);
 
         int relationship = Util.find_relationship(sender_node_id);
 
@@ -253,12 +248,8 @@ public class Provider_handlers {
         connection_state.PREDECESSOR_PORT = message.get_arg(Message.PREDECESSOR);
         connection_state.SUCCESSOR_PORT = message.get_arg(Message.SUCCESSOR);
 
-        try {
-            connection_state.PREDECESSOR_NODE_ID = Util.genHash(connection_state.PREDECESSOR_PORT);
-            connection_state.SUCCESSOR_NODE_ID = Util.genHash(connection_state.SUCCESSOR_PORT);
-        } catch (NoSuchAlgorithmException err) {
-            Log.e(TAG, "HANDLE_JOIN_RESPONSE: error generating hash");
-        }
+        connection_state.PREDECESSOR_NODE_ID = Util.port_to_hash(connection_state.PREDECESSOR_PORT);
+        connection_state.SUCCESSOR_NODE_ID = Util.port_to_hash(connection_state.SUCCESSOR_PORT);
 
         connection_state.CONNECTED = true;
 
@@ -405,16 +396,16 @@ public class Provider_handlers {
 
         switch (NODE_POSITION) {
             case ONLY_NODE:
-                Log.d(TAG, "HANDLE_INSERT: inserting pair locally");
+                Log.d(TAG, "HANDLE_INSERT: ONLY_NODE: inserting pair locally");
                 connection_manager.insert(key, value);
                 break;
             case FIRST_NODE:
                 if (Util.less_than(message_id, connection_state.MY_NODE_ID)
                         || Util.greater_than(message_id, connection_state.PREDECESSOR_NODE_ID)) {
-                    Log.d(TAG, "HANDLE_INSERT: inserting pair locally");
+                    Log.d(TAG, "HANDLE_INSERT: FIRST_NODE: inserting pair locally");
                     connection_manager.insert(key, value);
                 } else {
-                    Log.d(TAG, "HANDLE_INSERT: forwarding message to next node");
+                    Log.d(TAG, "HANDLE_INSERT: FIRST_NODE: forwarding message to next node");
                     send_message(message, connection_state.SUCCESSOR_PORT);
                 }
                 break;
@@ -422,10 +413,10 @@ public class Provider_handlers {
             case MIDDLE_NODE:
                 if (Util.less_than(message_id, connection_state.MY_NODE_ID)
                         && Util.greater_than(message_id, connection_state.PREDECESSOR_NODE_ID)) {
-                    Log.d(TAG, "HANDLE_INSERT: inserting pair locally");
+                    Log.d(TAG, "HANDLE_INSERT: MID/LAST NODE: inserting pair locally");
                     connection_manager.insert(key, value);
                 } else {
-                    Log.d(TAG, "HANDLE_INSERT: forwarding message to next node");
+                    Log.d(TAG, "HANDLE_INSERT: MID/LAST NODE: forwarding message to next node");
                     send_message(message, connection_state.SUCCESSOR_PORT);
                 }
                 break;
@@ -458,8 +449,10 @@ public class Provider_handlers {
             case FIRST_NODE:
                 if (Util.less_than(message_id, connection_state.MY_NODE_ID)
                         || Util.greater_than(message_id, connection_state.PREDECESSOR_NODE_ID)) {
+                    Log.d(TAG, "HANDLE_DELETE: deleting locally");
                     connection_manager.delete(key);
                 } else {
+                    Log.d(TAG, "HANDLE_DELETE: forwarding delete");
                     send_message(message, connection_state.SUCCESSOR_PORT);
                 }
                 break;
@@ -467,8 +460,10 @@ public class Provider_handlers {
             case MIDDLE_NODE:
                 if (Util.less_than(message_id, connection_state.MY_NODE_ID)
                         && Util.greater_than(message_id, connection_state.PREDECESSOR_NODE_ID)) {
+                    Log.d(TAG, "HANDLE_DELETE: deleting locally");
                     connection_manager.delete(key);
                 } else {
+                    Log.d(TAG, "HANDLE_DELETE: forwarding delete");
                     send_message(message, connection_state.SUCCESSOR_PORT);
                 }
                 break;
@@ -509,20 +504,14 @@ public class Provider_handlers {
         String successor = message.get_arg(Message.SUCCESSOR);
         String predecessor = message.get_arg(Message.PREDECESSOR);
 
-        try {
+        if (successor != null) {
+            connection_state.SUCCESSOR_PORT = successor;
+            connection_state.SUCCESSOR_NODE_ID = Util.port_to_hash(successor);
+        }
 
-            if (successor != null) {
-                connection_state.SUCCESSOR_PORT = successor;
-                connection_state.SUCCESSOR_NODE_ID = Util.genHash(connection_state.SUCCESSOR_PORT);
-            }
-
-            if (predecessor != null) {
-                connection_state.PREDECESSOR_PORT = predecessor;
-                connection_state.PREDECESSOR_NODE_ID = Util.genHash(predecessor);
-            }
-
-        } catch (NoSuchAlgorithmException err) {
-            Log.e(TAG, "HANDLE_UPDATE_POINTERS: gen hash error");
+        if (predecessor != null) {
+            connection_state.PREDECESSOR_PORT = predecessor;
+            connection_state.PREDECESSOR_NODE_ID = Util.port_to_hash(predecessor);
         }
 
         Log.d(TAG, "HANDLE_UPDATE_POINTERS: succ: " + connection_state.SUCCESSOR_PORT +

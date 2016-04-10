@@ -5,8 +5,12 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.util.Log;
 
+import java.security.NoSuchAlgorithmException;
+
+import edu.buffalo.cse.cse486586.simpledht.Connection_state;
 import edu.buffalo.cse.cse486586.simpledht.Message;
 import edu.buffalo.cse.cse486586.simpledht.SimpleDhtProvider;
+import edu.buffalo.cse.cse486586.simpledht.Util;
 
 public class Test_query implements Testable{
 
@@ -35,10 +39,13 @@ public class Test_query implements Testable{
     }
 
 
+    private Connection_state connection_state;
+
     public Test_query(ContentResolver resolver, String command) {
         this.resolver = resolver;
         this.uri = Debug.buildUri("content", "edu.buffalo.cse.cse486586.simpledht.provider");
         this.COMMAND = command;
+        connection_state = Connection_state.getConnectionState();
     }
 
     private String[] test() {
@@ -56,9 +63,20 @@ public class Test_query implements Testable{
             String returnValue = resultCursor.getString(valueIndex);
             output[i] = "[ " + returnKey + " ] [ " + returnValue + " ]";
 
-            Log.d(TAG, "Test: entry: " + output[i]);
+            String key_hash = "UNSET";
+            try {
+                key_hash = Util.genHash(returnKey);
+            } catch (NoSuchAlgorithmException err) {
+                Log.e(TAG, "DEBUG: gen hash error");
+            }
+
+            Log.d(TAG, "Test: entry: " + output[i] + " hash: " + key_hash);
             resultCursor.moveToNext();
         }
+
+        Log.d(TAG, "TEST: my_id: " + connection_state.MY_NODE_ID
+                + " succ_id: " + connection_state.SUCCESSOR_NODE_ID
+                + " predd_id: " + connection_state.PREDECESSOR_NODE_ID);
 
         return output;
 
