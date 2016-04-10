@@ -5,7 +5,7 @@
     tools:context=".SimpleDhtActivity" >
 
     <Button
-        android:id="@+id/button1"
+        android:id="@+id/local_dump"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
@@ -13,24 +13,24 @@
         android:text="@string/button_ldump" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/global_dump"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/button1"
+        android:layout_toRightOf="@id/local_dump"
         android:text="@string/button_gdump" />
 
     <Button
         android:id="@+id/button3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/button2"
+        android:layout_toRightOf="@id/global_dump"
         android:text="@string/button_test" />
 
     <Button
         android:id="@+id/debug_pointers"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/button1"
+        android:layout_below="@id/local_dump"
         android:layout_alignParentLeft="true"
         android:text="debug pointers" />
 
@@ -38,7 +38,7 @@
         android:id="@+id/debug_insert"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/button1"
+        android:layout_below="@id/local_dump"
         android:layout_toRightOf="@id/debug_pointers"
         android:text="debug insert" />
 

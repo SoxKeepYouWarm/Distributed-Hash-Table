@@ -5,12 +5,8 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.widget.TextView;
 
-import junit.framework.Test;
-
+import edu.buffalo.cse.cse486586.simpledht.Message;
 import edu.buffalo.cse.cse486586.simpledht.SimpleDhtProvider;
-import edu.buffalo.cse.cse486586.simpledht.Test.Test_insert;
-import edu.buffalo.cse.cse486586.simpledht.Test.Test_node_pointers;
-import edu.buffalo.cse.cse486586.simpledht.Test.Testable;
 
 public class Debug {
 
@@ -31,8 +27,18 @@ public class Debug {
 
 
     public void debug_node_pointers() {
-        Testable node_pointer_test = new Test_node_pointers(resolver);
+        Testable node_pointer_test = new Test_query(resolver, Message.DEBUG_NODE_POINTERS);
         new Task().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, node_pointer_test);
+    }
+
+    public void debug_local_dump() {
+        Testable local_dump_test = new Test_query(resolver, Message.DEBUG_DUMP_LOCAL);
+        new Task().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, local_dump_test);
+    }
+
+    public void debug_global_dump() {
+        Testable global_dump_test = new Test_query(resolver, Message.DEBUG_DUMP_GLOBAL);
+        new Task().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, global_dump_test);
     }
 
     public void debug_insert() {

@@ -6,7 +6,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.util.Log;
 
-import edu.buffalo.cse.cse486586.simpledht.Message;
 import edu.buffalo.cse.cse486586.simpledht.SimpleDhtProvider;
 
 public class Test_insert implements Testable{
@@ -31,13 +30,12 @@ public class Test_insert implements Testable{
         this.MULTIPLE_INSERT = multiple_insert;
         initialize_sample_input();
     }
-
     private void initialize_sample_input() {
         if (MULTIPLE_INSERT) {
 
         } else {
-            single_input.put(KEY_FIELD, "key0");
-            single_input.put(VALUE_FIELD, "value0");
+            single_input.put(KEY_FIELD, "debug_key");
+            single_input.put(VALUE_FIELD, "debug_value");
         }
     }
 

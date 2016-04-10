@@ -27,7 +27,7 @@ public class Provider_handlers {
 
     public void send_message(Message message, String destination_port) {
         if (destination_port.equals(connection_state.MY_PORT)) route_incoming_message(message);
-        new ClientTask(message, destination_port).start();
+        else new ClientTask(message, destination_port).start();
     }
 
     public void handle_join_request(Message message) {
@@ -289,7 +289,7 @@ public class Provider_handlers {
                     Log.d(TAG, "HANDLE_QUERY: not found: " + message.stringify());
                 } else {
                     message.insert_message(key, value);
-                    Log.d(TAG, "HANDLE_QUERY: found: " + message.stringify());
+                    Log.d(TAG, "HANDLE_QUERY: found locally, key: " + key+ " msg: " + message.stringify());
                 }
 
                 message.setCommand(Message.QUERY_RESPONSE);
@@ -306,7 +306,7 @@ public class Provider_handlers {
                         Log.d(TAG, "HANDLE_QUERY: not found: " + message.stringify());
                     } else {
                         message.insert_message(key, value);
-                        Log.d(TAG, "HANDLE_QUERY: found: " + message.stringify());
+                        Log.d(TAG, "HANDLE_QUERY: found locally, key: " + key+ " msg: " + message.stringify());
                     }
 
                     message.setCommand(Message.QUERY_RESPONSE);
@@ -329,7 +329,7 @@ public class Provider_handlers {
                         Log.d(TAG, "HANDLE_QUERY: not found: " + message.stringify());
                     } else {
                         message.insert_message(key, value);
-                        Log.d(TAG, "HANDLE_QUERY: found: " + message.stringify());
+                        Log.d(TAG, "HANDLE_QUERY: found locally, key: " + key+ " msg: " + message.stringify());
                     }
 
                     message.setCommand(Message.QUERY_RESPONSE);
@@ -538,7 +538,7 @@ public class Provider_handlers {
 
         String my_info = "PREDECESSOR: " + connection_state.PREDECESSOR_PORT +
                 " SUCCESSOR: " + connection_state.SUCCESSOR_PORT;
-        message.insert_arg(connection_state.MY_PORT, my_info);
+        message.insert_message(connection_state.MY_PORT, my_info);
 
         if (message.getSender_port().equals(connection_state.SUCCESSOR_PORT)) {
             // forwarding response to the original sender

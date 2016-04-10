@@ -42,6 +42,9 @@ public class Message {
     public static String QUERY_NOT_FOUND = new String(Character.toChars(203));
     /* ARGUMENTS */
 
+    public static  String DEBUG_DUMP_LOCAL = "@";
+    public static  String DEBUG_DUMP_GLOBAL = "*";
+
     public static String DEBUG_NODE_POINTERS = new String(Character.toChars(199));
     public static String DEBUG_NODE_POINTERS_RESPONSE = "debug_node_pointers_response";
 

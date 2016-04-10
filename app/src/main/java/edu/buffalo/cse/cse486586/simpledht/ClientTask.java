@@ -38,7 +38,7 @@ public class ClientTask extends Thread {
             out.println(message.stringify());
             Log.d(TAG, "CLIENT_TASK: sent " + message.stringify());
 
-            client_socket.setSoTimeout(100);
+            client_socket.setSoTimeout(250);
             BufferedReader in = new BufferedReader(new InputStreamReader(client_socket.getInputStream()));
             String msg;
             if ((msg = in.readLine()) != null) {

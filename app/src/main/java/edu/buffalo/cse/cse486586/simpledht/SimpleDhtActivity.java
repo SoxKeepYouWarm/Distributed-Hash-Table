@@ -21,7 +21,22 @@ public class SimpleDhtActivity extends Activity {
         findViewById(R.id.button3).setOnClickListener(
                 new OnTestClickListener(tv, getContentResolver()));
 
+
         final Debug debugger = new Debug(getContentResolver(), tv);
+
+        findViewById(R.id.local_dump).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                debugger.debug_local_dump();
+            }
+        });
+
+        findViewById(R.id.global_dump).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                debugger.debug_global_dump();
+            }
+        });
 
         findViewById(R.id.debug_pointers).setOnClickListener(new View.OnClickListener() {
             @Override

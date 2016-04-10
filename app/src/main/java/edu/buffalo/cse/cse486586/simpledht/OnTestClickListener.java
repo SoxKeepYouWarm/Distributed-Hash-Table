@@ -124,6 +124,8 @@ public class OnTestClickListener implements OnClickListener {
 					String returnValue = resultCursor.getString(valueIndex);
 					if (!(returnKey.equals(key) && returnValue.equals(val))) {
 						Log.e(TAG, "(key, value) pairs don't match\n");
+						Log.e(TAG, "DEBUG: " + "CORRECT: key: " + key + " value: " + val +
+								" FOUND: key: " + returnKey + " value: " + returnValue);
 						resultCursor.close();
 						throw new Exception();
 					}

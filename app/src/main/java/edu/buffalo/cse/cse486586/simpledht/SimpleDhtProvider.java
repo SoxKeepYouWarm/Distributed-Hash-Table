@@ -1,7 +1,9 @@
 package edu.buffalo.cse.cse486586.simpledht;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import java.util.Hashtable;
+import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -120,7 +122,7 @@ public class SimpleDhtProvider extends ContentProvider implements Connection_man
 
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
-        Log.d(TAG, "delete selection is: " + selection);
+        Log.d(TAG, "DELETE: selection: " + selection);
 
         String command;
 
@@ -144,8 +146,8 @@ public class SimpleDhtProvider extends ContentProvider implements Connection_man
 
     @Override
     public Uri insert(Uri uri, ContentValues values) {
-        Log.d(TAG, "insert value is key: " + values.getAsString("key") +
-                " value: " + values.getAsString("value"));
+        Log.d(TAG, "INSERT: key: " + values.getAsString(Message.KEY) +
+                " value: " + values.getAsString(Message.VALUE));
 
         Message insert_message = new Message(Message.INSERT, connection_state.MY_PORT);
         insert_message.insert_arg(Message.INSERT_KEY, values.getAsString(Message.KEY));
@@ -205,7 +207,13 @@ public class SimpleDhtProvider extends ContentProvider implements Connection_man
         String[] columns= {"key", "value"};
         MatrixCursor result= new MatrixCursor(columns);
 
-        for (String key: query_result.get_messages().keySet()) {
+        String[] sorted_keys = query_result
+                .get_messages().keySet()
+                .toArray(new String[query_result.get_messages().keySet().size()]);
+
+        Arrays.sort(sorted_keys);
+
+        for (String key: sorted_keys) {
             String value = query_result.get_message(key);
             if (value.equals(Message.QUERY_NOT_FOUND)) {
                 Log.e(TAG, "QUERY: " + key + " was not found");
