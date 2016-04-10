@@ -57,11 +57,11 @@ public class ClientTask extends Thread {
             client_socket.close();
 
         } catch (SocketTimeoutException e) {
-            Log.e(TAG, "timeout " + e.getMessage());
+            Log.e(TAG, "CLIENT_TASK: timeout " + e.getMessage());
         } catch (SocketException e) {
-            Log.e(TAG, "Socket exception (timeout): " + e.getMessage());
+            Log.e(TAG, "CLIENT_TASK: Socket exception (timeout): " + e.getMessage());
         } catch (IOException e) {
-            Log.e(TAG, "io exception connecting client socket: " + e.getMessage());
+            Log.e(TAG, "CLIENT_TASK: io exception connecting client socket: " + e.getMessage());
         }
 
     }

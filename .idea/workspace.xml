@@ -11,23 +11,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b9016236-4b48-4400-b973-b33e3e661705" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/2.10/taskArtifacts/cache.properties.lock" afterPath="$PROJECT_DIR$/.gradle/2.10/taskArtifacts/cache.properties.lock" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/2.10/taskArtifacts/fileHashes.bin" afterPath="$PROJECT_DIR$/.gradle/2.10/taskArtifacts/fileHashes.bin" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/2.10/taskArtifacts/fileSnapshots.bin" afterPath="$PROJECT_DIR$/.gradle/2.10/taskArtifacts/fileSnapshots.bin" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/2.10/taskArtifacts/taskArtifacts.bin" afterPath="$PROJECT_DIR$/.gradle/2.10/taskArtifacts/taskArtifacts.bin" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/debug/edu/buffalo/cse/cse486586/simpledht/Provider_handlers.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/debug/edu/buffalo/cse/cse486586/simpledht/Provider_handlers.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/debug/edu/buffalo/cse/cse486586/simpledht/SimpleDhtProvider.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/debug/edu/buffalo/cse/cse486586/simpledht/SimpleDhtProvider.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/debug/edu/buffalo/cse/cse486586/simpledht/Test/Test_insert.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/debug/edu/buffalo/cse/cse486586/simpledht/Test/Test_insert.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/debug/edu/buffalo/cse/cse486586/simpledht/Test/Test_query.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/debug/edu/buffalo/cse/cse486586/simpledht/Test/Test_query.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/classes/debug/edu/buffalo/cse/cse486586/simpledht/Util.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/debug/edu/buffalo/cse/cse486586/simpledht/Util.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/transforms/dex/debug/folders/1000/1f/main/classes.dex" afterPath="$PROJECT_DIR$/app/build/intermediates/transforms/dex/debug/folders/1000/1f/main/classes.dex" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/outputs/apk/app-debug-unaligned.apk" afterPath="$PROJECT_DIR$/app/build/outputs/apk/app-debug-unaligned.apk" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/outputs/apk/app-debug.apk" afterPath="$PROJECT_DIR$/app/build/outputs/apk/app-debug.apk" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/edu/buffalo/cse/cse486586/simpledht/Provider_handlers.java" afterPath="$PROJECT_DIR$/app/src/main/java/edu/buffalo/cse/cse486586/simpledht/Provider_handlers.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/edu/buffalo/cse/cse486586/simpledht/SimpleDhtProvider.java" afterPath="$PROJECT_DIR$/app/src/main/java/edu/buffalo/cse/cse486586/simpledht/SimpleDhtProvider.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/edu/buffalo/cse/cse486586/simpledht/Test/Test_query.java" afterPath="$PROJECT_DIR$/app/src/main/java/edu/buffalo/cse/cse486586/simpledht/Test/Test_query.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/edu/buffalo/cse/cse486586/simpledht/Util.java" afterPath="$PROJECT_DIR$/app/src/main/java/edu/buffalo/cse/cse486586/simpledht/Util.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/edu/buffalo/cse/cse486586/simpledht/ClientTask.java" afterPath="$PROJECT_DIR$/app/src/main/java/edu/buffalo/cse/cse486586/simpledht/ClientTask.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/edu/buffalo/cse/cse486586/simpledht/ServerTask.java" afterPath="$PROJECT_DIR$/app/src/main/java/edu/buffalo/cse/cse486586/simpledht/ServerTask.java" />
     </list>
     <ignored path="cse486_pa3.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -99,10 +84,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="SimpleDhtProvider.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="SimpleDhtProvider.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/edu/buffalo/cse/cse486586/simpledht/SimpleDhtProvider.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.17975207">
+            <state vertical-scroll-proportion="0.0">
               <caret line="79" column="37" selection-start-line="79" selection-start-column="37" selection-end-line="79" selection-end-column="37" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -152,11 +137,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ServerTask.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="ServerTask.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/edu/buffalo/cse/cse486586/simpledht/ServerTask.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-10.096774">
-              <caret line="36" column="92" selection-start-line="36" selection-start-column="90" selection-end-line="36" selection-end-column="92" />
+            <state vertical-scroll-proportion="1.1589404">
+              <caret line="56" column="50" selection-start-line="56" selection-start-column="50" selection-end-line="56" selection-end-column="50" />
               <folding />
             </state>
           </provider>
@@ -179,8 +164,8 @@
       <file leaf-file-name="ClientTask.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/edu/buffalo/cse/cse486586/simpledht/ClientTask.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-9.354838">
-              <caret line="41" column="89" selection-start-line="41" selection-start-column="87" selection-end-line="41" selection-end-column="89" />
+            <state vertical-scroll-proportion="-9.935484">
+              <caret line="63" column="37" selection-start-line="63" selection-start-column="37" selection-end-line="63" selection-end-column="37" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -1665,7 +1650,6 @@
         <option value="$PROJECT_DIR$/local.properties" />
         <option value="$PROJECT_DIR$/build.gradle" />
         <option value="$PROJECT_DIR$/app/src/main/java/edu/buffalo/cse/cse486586/simpledht/Connnection_manager.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/edu/buffalo/cse/cse486586/simpledht/ServerTask.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/edu/buffalo/cse/cse486586/simpledht/Connection_state.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/edu/buffalo/cse/cse486586/simpledht/Connection_manager.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/edu/buffalo/cse/cse486586/simpledht/Test/Testable.java" />
@@ -1677,12 +1661,13 @@
         <option value="$PROJECT_DIR$/app/src/main/java/edu/buffalo/cse/cse486586/simpledht/Test/Debug.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/edu/buffalo/cse/cse486586/simpledht/Test/Test_local_dump.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/edu/buffalo/cse/cse486586/simpledht/OnTestClickListener.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/edu/buffalo/cse/cse486586/simpledht/ClientTask.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/edu/buffalo/cse/cse486586/simpledht/Test/Test_insert.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/edu/buffalo/cse/cse486586/simpledht/Test/Test_query.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/edu/buffalo/cse/cse486586/simpledht/Util.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/edu/buffalo/cse/cse486586/simpledht/Provider_handlers.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/edu/buffalo/cse/cse486586/simpledht/SimpleDhtProvider.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/edu/buffalo/cse/cse486586/simpledht/ClientTask.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/edu/buffalo/cse/cse486586/simpledht/ServerTask.java" />
       </list>
     </option>
   </component>
@@ -2321,7 +2306,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="65" y="24" width="1855" height="1056" extended-state="6" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32832617" sideWeight="0.49571276" order="7" side_tool="false" content_ui="tabs" />
@@ -2912,14 +2897,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/edu/buffalo/cse/cse486586/simpledht/ServerTask.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-10.096774">
-          <caret line="36" column="92" selection-start-line="36" selection-start-column="90" selection-end-line="36" selection-end-column="92" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/edu/buffalo/cse/cse486586/simpledht/Message.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -2948,16 +2925,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/edu/buffalo/cse/cse486586/simpledht/ClientTask.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-9.354838">
-          <caret line="41" column="89" selection-start-line="41" selection-start-column="87" selection-end-line="41" selection-end-column="89" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/edu/buffalo/cse/cse486586/simpledht/Util.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -2970,7 +2937,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/edu/buffalo/cse/cse486586/simpledht/SimpleDhtProvider.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.17975207">
+        <state vertical-scroll-proportion="0.0">
           <caret line="79" column="37" selection-start-line="79" selection-start-column="37" selection-end-line="79" selection-end-column="37" />
           <folding>
             <element signature="imports" expanded="true" />
@@ -2990,6 +2957,24 @@
             <element signature="e#4822#4823#0" expanded="true" />
             <element signature="e#4861#4862#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/edu/buffalo/cse/cse486586/simpledht/ClientTask.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-9.935484">
+          <caret line="63" column="37" selection-start-line="63" selection-start-column="37" selection-end-line="63" selection-end-column="37" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/edu/buffalo/cse/cse486586/simpledht/ServerTask.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="1.1589404">
+          <caret line="56" column="50" selection-start-line="56" selection-start-column="50" selection-end-line="56" selection-end-column="50" />
+          <folding />
         </state>
       </provider>
     </entry>

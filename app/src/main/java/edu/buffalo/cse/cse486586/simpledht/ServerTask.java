@@ -54,7 +54,7 @@ public class ServerTask extends Thread {
         } catch (NullPointerException err) {
             Log.e(TAG, "SERVER_TASK: null pointer exception");
         } catch (IOException err) {
-            Log.e(TAG, err.getMessage());
+            Log.e(TAG, "SERVER_TASK: io exception " + err.getMessage());
         }
 
 
